@@ -6,7 +6,6 @@ body, html {
   background: #020804;
 }
 
-/* Matrix Canvas Wallpaper */
 #matrix-bg {
   position: fixed;
   inset: 0;
@@ -24,7 +23,6 @@ body, html {
   background-position: center;
 }
 
-/* Top Translucent Menu Bar */
 #menubar {
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -45,7 +43,6 @@ body, html {
 .apple-logo:hover, .menu-item:hover { background: rgba(52, 211, 153, 0.2); }
 .menu-item { cursor: pointer; padding: 2px 7px; border-radius: 5px; color: rgba(255, 255, 255, 0.92); }
 
-/* Apple Dropdown */
 #apple-menu {
   position: fixed;
   top: 32px; left: 10px;
@@ -64,7 +61,6 @@ body, html {
 .drop-item:hover { background: #10b981; color: #02130b; font-weight: 600; }
 .drop-sep { height: 1px; background: rgba(255, 255, 255, 0.12); margin: 4px 0; }
 
-/* Floating macOS Glass Dock */
 #dock-wrap {
   position: fixed;
   bottom: 12px;
@@ -135,7 +131,6 @@ body, html {
 .dock-item.open .dock-dot { display: block; }
 .dock-divider { width: 1px; height: 36px; background: rgba(52, 211, 153, 0.25); margin: 0 2px; align-self: center; }
 
-/* macOS Windows */
 .os-window {
   position: absolute;
   width: 880px;
@@ -187,22 +182,35 @@ body, html {
 .tl-max { background: #27c93f; }
 .win-title { position: absolute; left: 0; right: 0; text-align: center; font-size: 13px; font-weight: 600; color: rgba(255, 255, 255, 0.92); pointer-events: none; }
 .win-body { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; background: #090d16; user-select: text; }
-
-/* Browser, Arcade, Studio, Settings */
 .browser-bar { display: flex; gap: 8px; padding: 8px 12px; background: #13222c; border-bottom: 1px solid rgba(255, 255, 255, 0.1); align-items: center; }
 .browser-bar input { flex: 1; padding: 6px 14px; border-radius: 8px; border: 1px solid rgba(52, 211, 153, 0.25); background: rgba(9, 13, 22, 0.9); color: white; font-size: 13px; text-align: center; }
 .browser-bar input:focus { text-align: left; outline: none; border-color: #34d399; }
 .browser-bar button { padding: 6px 12px; border-radius: 7px; border: none; background: #10b981; color: #02130b; font-weight: 700; font-size: 12px; cursor: pointer; }
 iframe.app-frame { flex: 1; width: 100%; border: none; background: #fff; }
-.arcade-wrap { padding: 16px; overflow-y: auto; flex: 1; }
-.arcade-top { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
-.arcade-top input { flex: 1; min-width: 180px; padding: 8px 14px; border-radius: 10px; border: 1px solid rgba(52, 211, 153, 0.25); background: #13222c; color: white; }
-.arcade-top button { padding: 8px 14px; border-radius: 10px; border: none; background: #10b981; color: #02130b; font-weight: 700; cursor: pointer; }
-.arcade-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 14px; }
-.game-card { background: #13222c; border: 1px solid rgba(52, 211, 153, 0.2); border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.15s, border-color 0.15s; }
-.game-card:hover { transform: translateY(-4px); border-color: #34d399; }
-.game-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; background: #090d16; }
-.game-card div { padding: 8px; font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
+
+.store-shell { display: flex; flex-direction: column; flex: 1; overflow: hidden; background: #090d16; }
+.store-nav { display: flex; align-items: center; gap: 10px; padding: 10px 16px; background: #13222c; border-bottom: 1px solid rgba(52, 211, 153, 0.2); flex-wrap: wrap; }
+.store-tabs { display: flex; background: #090d16; padding: 3px; border-radius: 9px; border: 1px solid rgba(255, 255, 255, 0.1); }
+.store-tab { padding: 5px 14px; border-radius: 7px; border: none; background: transparent; color: #94a3b8; font-size: 12px; font-weight: 600; cursor: pointer; }
+.store-tab.active { background: #10b981; color: #02130b; }
+.store-search { flex: 1; min-width: 160px; padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(52, 211, 153, 0.25); background: #090d16; color: #fff; font-size: 13px; }
+.store-body { flex: 1; overflow-y: auto; padding: 18px; }
+.store-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+.store-card { display: flex; align-items: center; gap: 12px; background: #13222c; border: 1px solid rgba(52, 211, 153, 0.18); border-radius: 14px; padding: 12px; transition: transform 0.15s, border-color 0.15s; }
+.store-card:hover { transform: translateY(-2px); border-color: #34d399; }
+.store-icon { width: 52px; height: 52px; border-radius: 12px; background: linear-gradient(135deg, #065f46, #0f172a); display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0; border: 1px solid rgba(52, 211, 153, 0.3); }
+.store-meta { flex: 1; min-width: 0; }
+.store-name { font-size: 14px; font-weight: 700; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.store-sub { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+.store-actions { display: flex; flex-direction: column; gap: 5px; align-items: flex-end; }
+.btn-get { padding: 5px 14px; border-radius: 999px; border: none; background: #2563eb; color: #fff; font-size: 12px; font-weight: 700; cursor: pointer; }
+.btn-play { padding: 5px 14px; border-radius: 999px; border: none; background: #10b981; color: #02130b; font-size: 12px; font-weight: 700; cursor: pointer; }
+.btn-offload { padding: 3px 10px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.18); background: transparent; color: #94a3b8; font-size: 10px; cursor: pointer; }
+.btn-offload:hover { color: #f87171; border-color: #f87171; }
+.add-game-bar { display: flex; gap: 8px; margin-bottom: 16px; background: #13222c; padding: 10px; border-radius: 12px; border: 1px solid rgba(52, 211, 153, 0.2); flex-wrap: wrap; }
+.add-game-bar input { flex: 1; min-width: 140px; padding: 6px 10px; border-radius: 7px; border: 1px solid rgba(255, 255, 255, 0.15); background: #090d16; color: #fff; font-size: 12px; }
+.add-game-bar button { padding: 6px 14px; border-radius: 7px; border: none; background: #10b981; color: #02130b; font-weight: 700; font-size: 12px; cursor: pointer; }
+
 .settings-wrap { padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
 .setting-card { background: #13222c; padding: 14px; border-radius: 12px; border: 1px solid rgba(52, 211, 153, 0.2); }
 .setting-card h3 { margin: 0 0 10px; font-size: 14px; color: #34d399; }
