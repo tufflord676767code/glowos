@@ -24,6 +24,8 @@ function ensureProxy() {
     if (!navigator.serviceWorker.controller && reg.active) {
       await new Promise(r => setTimeout(r, 150));
     }
+    const connection = new BareMux.BareMuxConnection("/baremux/worker.js");
+    await connection.setTransport("/bare/index.mjs", [location.origin + "/bare/"]);
   })().catch(err => {
     proxyPromise = null;
     console.error("UV init error:", err);
