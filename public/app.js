@@ -2,14 +2,16 @@ const APP_ICONS = {
   browser: `<svg viewBox="0 0 64 64" width="34" height="34"><defs><linearGradient id="ret" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient></defs><rect x="6" y="6" width="52" height="52" rx="14" fill="url(#ret)"/><circle cx="32" cy="32" r="16" fill="none" stroke="#fff" stroke-width="3.5"/><circle cx="32" cy="32" r="7" fill="#fff"/><circle cx="35" cy="29" r="2.2" fill="#2563eb"/></svg>`,
   glow: `<svg viewBox="0 0 64 64" width="34" height="34"><defs><linearGradient id="msg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4ade80"/><stop offset="100%" stop-color="#16a34a"/></linearGradient></defs><rect x="6" y="6" width="52" height="52" rx="14" fill="url(#msg)"/><path d="M32 16 C20.5 16 12 22.8 12 31.2 C12 35.8 14.8 39.8 19.2 42.5 L16.5 49 L24.5 45.2 C26.9 45.9 29.4 46.3 32 46.3 C43.5 46.3 52 39.5 52 31.2 C52 22.8 43.5 16 32 16 Z" fill="#fff"/></svg>`,
   arcade: `<svg viewBox="0 0 64 64" width="34" height="34"><defs><linearGradient id="arc" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#059669"/></linearGradient></defs><rect x="6" y="14" width="52" height="36" rx="14" fill="url(#arc)"/><path d="M22 25 v14 M15 32 h14" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="43" cy="28" r="3" fill="#fff"/><circle cx="49" cy="34" r="3" fill="#fff"/></svg>`,
+  links: `<svg viewBox="0 0 64 64" width="34" height="34"><defs><linearGradient id="lnk" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#34d399"/><stop offset="100%" stop-color="#0284c7"/></linearGradient></defs><rect x="6" y="6" width="52" height="52" rx="14" fill="url(#lnk)"/><path d="M27 37 L37 27 M23 31 L19 35 A7 7 0 0 0 29 45 L33 41 M41 33 L45 29 A7 7 0 0 0 35 19 L31 23" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>`,
   studio: `<svg viewBox="0 0 64 64" width="34" height="34"><path d="M46 8 L56 13 V51 L46 56 L22 36 L12 44 L8 40 L18 32 L8 24 L12 20 L22 28 Z" fill="#007acc"/><path d="M46 8 L56 13 V51 L46 56 V8 Z" fill="#1f9cf0"/><path d="M46 20 L31 32 L46 44 V20 Z" fill="#060b19"/></svg>`,
   settings: `<svg viewBox="0 0 64 64" width="34" height="34"><defs><linearGradient id="set" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#94a3b8"/><stop offset="100%" stop-color="#475569"/></linearGradient></defs><circle cx="32" cy="32" r="26" fill="url(#set)"/><circle cx="32" cy="32" r="10" fill="none" stroke="#fff" stroke-width="5"/><path d="M32 10 v6 M32 48 v6 M10 32 h6 M48 32 h6 M17 17 l4 4 M43 43 l4 4 M47 17 l-4 4 M21 43 l-4 4" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>`
 };
 
 const coreApps = [
   { id: "browser", name: "Retina", svg: APP_ICONS.browser, kind: "browser", url: "https://duckduckgo.com" },
-  { id: "glow", name: "Glow Chat", svg: APP_ICONS.glow, kind: "browser", url: "https://web.app" },
+  { id: "glow", name: "Glow Chat", svg: APP_ICONS.glow, kind: "browser", url: "https://glowchat-7b6b3.web.app/" },
   { id: "arcade", name: "Games", svg: APP_ICONS.arcade, kind: "arcade" },
+  { id: "links", name: "Glow Links", svg: APP_ICONS.links, kind: "links" },
   { id: "studio", name: "Code Studio", svg: APP_ICONS.studio, kind: "studio" },
   { id: "settings", name: "Settings", svg: APP_ICONS.settings, kind: "settings" }
 ];
@@ -146,6 +148,8 @@ function launchApp(app) {
     openBrowserWindow(app.name, app.id, app.url || "https://duckduckgo.com", true, app.kind === "browser");
   } else if (app.kind === "arcade") {
     openGnMathArcade();
+  } else if (app.kind === "links") {
+    openGlowLinksWindow();
   } else if (app.kind === "studio") {
     openCodeStudioWindow();
   } else if (app.kind === "settings") {
@@ -195,18 +199,18 @@ function openBrowserWindow(title, appId, initialUrl, useProxy = true, showBar = 
 }
 
 const STORE_CATALOG = [
-  { id: "slope", name: "Slope", source: "Selenite", cat: "Arcade", icon: "🟢", url: "https://selenite.cc" },
-  { id: "1v1lol", name: "1v1.LOL", source: "Selenite", cat: "Action", icon: "🎯", url: "https://selenite.cc" },
-  { id: "retrobowl", name: "Retro Bowl", source: "Selenite", cat: "Sports", icon: "🏈", url: "https://selenite.cc" },
-  { id: "bitlife", name: "BitLife", source: "Selenite", cat: "Simulation", icon: "🧬", url: "https://selenite.cc" },
-  { id: "drifthunters", name: "Drift Hunters", source: "Selenite", cat: "Racing", icon: "🏎️", url: "https://selenite.cc" },
-  { id: "minecraft", name: "Eaglercraft 1.8", source: "Selenite", cat: "Sandbox", icon: "⛏️", url: "https://selenite.cc" },
+  { id: "opium-main", name: "Opium Master Library (3,712 Games)", source: "Opium", cat: "All-in-One", icon: "💎", url: "https://opium.best" },
+  { id: "slope", name: "Slope", source: "Opium · GN-math", cat: "Arcade", icon: "🟢", url: "https://opium.best" },
+  { id: "1v1lol", name: "1v1.LOL", source: "Opium · CKV", cat: "Action", icon: "🎯", url: "https://opium.best" },
+  { id: "retrobowl", name: "Retro Bowl", source: "Opium · GN-math", cat: "Sports", icon: "🏈", url: "https://opium.best" },
+  { id: "bitlife", name: "BitLife", source: "Opium · Truffled", cat: "Simulation", icon: "🧬", url: "https://opium.best" },
+  { id: "drifthunters", name: "Drift Hunters", source: "Opium · CKV", cat: "Racing", icon: "🏎️", url: "https://opium.best" },
+  { id: "minecraft", name: "Eaglercraft 1.8", source: "Opium · Selenite", cat: "Sandbox", icon: "⛏️", url: "https://opium.best" },
   { id: "subwaysurfers", name: "Subway Surfers", source: "Truffled", cat: "Runner", icon: "🛹", url: "https://truffled.lol" },
-  { id: "geometrydash", name: "Geometry Dash", source: "Selenite", cat: "Rhythm", icon: "🟦", url: "https://selenite.cc" },
-  { id: "cookieclicker", name: "Cookie Clicker", source: "Selenite", cat: "Idle", icon: "🍪", url: "https://selenite.cc" },
-  { id: "basketrandom", name: "Basket Random", source: "Selenite", cat: "Sports", icon: "🏀", url: "https://selenite.cc" },
-  { id: "fnaf", name: "FNAF 1", source: "Selenite", cat: "Horror", icon: "🐻", url: "https://selenite.cc" },
-  { id: "stickmanhook", name: "Stickman Hook", source: "Truffled", cat: "Arcade", icon: "🪝", url: "https://truffled.lol" }
+  { id: "geometrydash", name: "Geometry Dash", source: "Opium · GN-math", cat: "Rhythm", icon: "🟦", url: "https://opium.best" },
+  { id: "cookieclicker", name: "Cookie Clicker", source: "Opium · Truffled", cat: "Idle", icon: "🍪", url: "https://opium.best" },
+  { id: "basketrandom", name: "Basket Random", source: "Opium · CKV", cat: "Sports", icon: "🏀", url: "https://opium.best" },
+  { id: "fnaf", name: "FNAF Collection", source: "Opium · Selenite", cat: "Horror", icon: "🐻", url: "https://opium.best" }
 ];
 
 function getInstalledGames() {
@@ -220,6 +224,7 @@ function saveInstalledGames(list) {
 function getCustomCatalog() {
   return JSON.parse(localStorage.getItem("novaos_custom_games") || "[]");
 }
+
 function openGnMathArcade() {
   createWindow("App Store & Games", "arcade", (body) => {
     let activeTab = "discover";
@@ -227,7 +232,7 @@ function openGnMathArcade() {
 
     const tabDiscover = el("button", { className: "store-tab active", textContent: "Discover" });
     const tabLibrary = el("button", { className: "store-tab", textContent: "My Library" });
-    const tabPortals = el("button", { className: "store-tab", textContent: "Full Portals (1.3k+)" });
+    const tabPortals = el("button", { className: "store-tab", textContent: "Full Portals (3.7k+)" });
     const searchInput = el("input", { className: "store-search", placeholder: "Search games..." });
 
     const nav = el("div", { className: "store-nav" }, [
@@ -301,12 +306,12 @@ function openGnMathArcade() {
       if (activeTab === "portals") {
         const portalGrid = el("div", { className: "store-grid" }, [
           el("div", { className: "store-card" }, [
-            el("div", { className: "store-icon", textContent: "🌙" }),
+            el("div", { className: "store-icon", textContent: "💎" }),
             el("div", { className: "store-meta" }, [
-              el("div", { className: "store-name", textContent: "Selenite Catalog" }),
-              el("div", { className: "store-sub", textContent: "selenite.cc · 800+ Web Games" })
+              el("div", { className: "store-name", textContent: "Opium Games (3,712)" }),
+              el("div", { className: "store-sub", textContent: "opium.best · GN-math, CKV, Truffled & Selenite" })
             ]),
-            el("button", { className: "btn-play", textContent: "Open", onclick: () => openBrowserWindow("Selenite", "arcade", "https://selenite.cc", true, true) })
+            el("button", { className: "btn-play", textContent: "Open", onclick: () => openBrowserWindow("Opium Games", "arcade", "https://opium.best", true, true) })
           ]),
           el("div", { className: "store-card" }, [
             el("div", { className: "store-icon", textContent: "🍄" }),
@@ -323,7 +328,7 @@ function openGnMathArcade() {
 
       if (activeTab === "discover") {
         const nameIn = el("input", { placeholder: "Custom Game Title" });
-        const urlIn = el("input", { placeholder: "Paste Selenite/Truffled Game URL" });
+        const urlIn = el("input", { placeholder: "Paste Opium/Truffled Game URL" });
         const addBtn = el("button", { textContent: "+ Add to Store", onclick: () => {
           if (!nameIn.value.trim() || !urlIn.value.trim()) return;
           const custom = getCustomCatalog();
@@ -354,6 +359,118 @@ function openGnMathArcade() {
     }
 
     renderStore();
+  });
+}
+const GLOW_LINK_VAULT = [
+  { name: "Glow Chat (Primary)", url: "https://glowchat-7b6b3.web.app/", tag: "Social", icon: "💬", proxy: true },
+  { name: "Opium Games (3,712)", url: "https://opium.best", tag: "Games", icon: "💎", proxy: true },
+  { name: "Truffled Portal", url: "https://truffled.lol", tag: "Games", icon: "🍄", proxy: true },
+  { name: "DuckDuckGo Search", url: "https://duckduckgo.com", tag: "Search", icon: "🦆", proxy: true }
+];
+
+function openGlowLinksWindow() {
+  createWindow("Glow Link Collection", "links", (body) => {
+    let query = "";
+    let activeTag = "All";
+
+    const searchInput = el("input", { className: "store-search", placeholder: "Search Glow Link Collection..." });
+    const nav = el("div", { className: "store-nav" }, [searchInput]);
+    const content = el("div", { className: "store-body" });
+    body.appendChild(el("div", { className: "store-shell" }, [nav, content]));
+
+    function getUserLinks() {
+      return JSON.parse(localStorage.getItem("novaos_glow_links") || "[]");
+    }
+
+    function saveUserLinks(list) {
+      localStorage.setItem("novaos_glow_links", JSON.stringify(list));
+    }
+
+    function renderLinks() {
+      content.innerHTML = "";
+      const allLinks = [...getUserLinks(), ...GLOW_LINK_VAULT];
+
+      const nameIn = el("input", { placeholder: "Link Name" });
+      const urlIn = el("input", { placeholder: "https://..." });
+      const tagIn = el("input", { placeholder: "Tag (e.g. Games, Proxy, Media)" });
+      tagIn.style.maxWidth = "160px";
+      const addBtn = el("button", { textContent: "+ Save Link", onclick: () => {
+        const name = nameIn.value.trim();
+        let url = urlIn.value.trim();
+        const tag = tagIn.value.trim() || "General";
+        if (!name || !url) return;
+        if (!url.startsWith("http")) url = "https://" + url;
+        const saved = getUserLinks();
+        saved.unshift({ id: "lnk-" + Date.now(), name, url, tag, icon: "🔗", proxy: true, custom: true });
+        saveUserLinks(saved);
+        nameIn.value = "";
+        urlIn.value = "";
+        tagIn.value = "";
+        renderLinks();
+      }});
+      content.appendChild(el("div", { className: "add-game-bar" }, [nameIn, urlIn, tagIn, addBtn]));
+
+      const tags = ["All", ...new Set(allLinks.map(l => l.tag || "General"))];
+      const pillRow = el("div", { style: "display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;" });
+      tags.forEach(t => {
+        const pill = el("button", {
+          className: "store-tab" + (activeTag === t ? " active" : ""),
+          textContent: t,
+          onclick: () => { activeTag = t; renderLinks(); }
+        });
+        pill.style.border = "1px solid rgba(52,211,153,0.25)";
+        pillRow.appendChild(pill);
+      });
+      content.appendChild(pillRow);
+
+      const filtered = allLinks.filter(l => {
+        const matchesTag = activeTag === "All" || (l.tag || "General") === activeTag;
+        const matchesQuery = l.name.toLowerCase().includes(query) || l.url.toLowerCase().includes(query);
+        return matchesTag && matchesQuery;
+      });
+
+      if (!filtered.length) {
+        content.appendChild(el("div", {
+          textContent: "No links found matching your filter.",
+          style: "color:#94a3b8;font-size:13px;padding:20px;text-align:center;"
+        }));
+        return;
+      }
+
+      const grid = el("div", { className: "store-grid" });
+      filtered.forEach(link => {
+        const actions = el("div", { className: "store-actions" }, [
+          el("button", {
+            className: "btn-play",
+            textContent: "Open",
+            onclick: () => openBrowserWindow(link.name, "browser", link.url, link.proxy !== false, true)
+          })
+        ]);
+        if (link.custom) {
+          actions.appendChild(el("button", {
+            className: "btn-offload",
+            textContent: "Delete",
+            onclick: () => {
+              saveUserLinks(getUserLinks().filter(x => x.id !== link.id));
+              renderLinks();
+            }
+          }));
+        }
+
+        grid.appendChild(el("div", { className: "store-card" }, [
+          el("div", { className: "store-icon", textContent: link.icon || "🔗" }),
+          el("div", { className: "store-meta" }, [
+            el("div", { className: "store-name", textContent: link.name }),
+            el("div", { className: "store-sub", textContent: `${link.tag || "Link"} · ${link.url.replace(/^https?:\/\//, "")}` })
+          ]),
+          actions
+        ]));
+      });
+      content.appendChild(grid);
+    }
+
+    searchInput.oninput = () => { query = searchInput.value.toLowerCase(); renderLinks(); };
+    renderLinks();
   });
 }
 let pyodideInstance = null;
