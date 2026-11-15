@@ -8,7 +8,7 @@ const APP_ICONS = {
 
 const coreApps = [
   { id: "browser", name: "Retina", svg: APP_ICONS.browser, kind: "browser", url: "https://duckduckgo.com" },
-  { id: "glow", name: "Glow Chat", svg: APP_ICONS.glow, kind: "direct", url: "https://web.app", allowMic: true },
+  { id: "glow", name: "Glow Chat", svg: APP_ICONS.glow, kind: "proxy", url: "https://web.app" },
   { id: "arcade", name: "Games", svg: APP_ICONS.arcade, kind: "arcade" },
   { id: "studio", name: "Code Studio", svg: APP_ICONS.studio, kind: "studio" },
   { id: "settings", name: "Settings", svg: APP_ICONS.settings, kind: "settings" }
@@ -25,7 +25,7 @@ function ensureProxy() {
       await new Promise(r => setTimeout(r, 150));
     }
     const connection = new BareMux.BareMuxConnection("/baremux/worker.js");
-    await connection.setTransport("/bare/index.mjs", [location.origin + "/bare/"]);
+    await connection.setTransport("/bare-client/index.mjs", [location.origin + "/bare/"]);
   })().catch(err => {
     proxyPromise = null;
     console.error("UV init error:", err);
@@ -147,7 +147,7 @@ function launchApp(app) {
   }
 
   if (app.kind === "browser" || app.kind === "proxy") {
-    openBrowserWindow(app.name, app.id, app.url || "https://duckduckgo.com", true);
+    openBrowserWindow(app.name, app.id, app.url || "https://duckduckgo.com", true, app.kind === "browser");
   } else if (app.kind === "direct") {
     createWindow(app.name, app.id, (body) => {
       const iframe = el("iframe", { className: "app-frame", src: app.url });
@@ -163,14 +163,16 @@ function launchApp(app) {
     openSettingsWindow();
   }
 }
-function openBrowserWindow(title, appId, initialUrl, useProxy = true) {
+function openBrowserWindow(title, appId, initialUrl, useProxy = true, showBar = true) {
   createWindow(title, appId, async (body) => {
     const backBtn = el("button", { type: "button", textContent: "◀", onclick: () => { try { iframe.contentWindow.history.back(); } catch {} } });
     const reloadBtn = el("button", { type: "button", textContent: "↻", onclick: () => navigate(input.value) });
     const input = el("input", { type: "text", value: initialUrl, placeholder: "Search or enter website name" });
     const goBtn = el("button", { type: "submit", textContent: "Go" });
     const form = el("form", { className: "browser-bar" }, [backBtn, reloadBtn, input, goBtn]);
+    if (!showBar) form.style.display = "none";
     const iframe = el("iframe", { className: "app-frame", allowFullscreen: true });
+    iframe.allow = "microphone; autoplay; fullscreen; clipboard-read; clipboard-write";
     iframe.style.background = "#090d16";
     body.append(form, iframe);
 
@@ -217,7 +219,7 @@ function openGnMathArcade() {
     const searchInput = el("input", { type: "text", placeholder: "Search 850+ games..." });
     const fullBtn = el("button", {
       textContent: "Open Full Portal",
-      onclick: () => openBrowserWindow("Games Portal", "browser", "https://github.io", true)
+      onclick: () => openBrowserWindow("Games Portal", "browser", "https://github.io", true, true)
     });
     const grid = el("div", { className: "arcade-grid", textContent: "Loading games..." });
     body.appendChild(el("div", { className: "arcade-wrap" }, [
@@ -247,7 +249,7 @@ function openGnMathArcade() {
         });
         const card = el("div", {
           className: "game-card",
-          onclick: () => openBrowserWindow(game.name, "arcade", targetUrl, true)
+          onclick: () => openBrowserWindow(game.name, "arcade", targetUrl, true, false)
         }, [img, el("div", { textContent: game.name })]);
         grid.appendChild(card);
       });
@@ -265,7 +267,7 @@ function openGnMathArcade() {
         document.createTextNode("Catalog feed blocked on this network. "),
         el("button", {
           textContent: "Open Games via Proxy",
-          onclick: () => openBrowserWindow("Games", "arcade", "https://github.io", true)
+          onclick: () => openBrowserWindow("Games", "arcade", "https://github.io", true, false)
         })
       );
     }
@@ -421,7 +423,7 @@ appleBtn.addEventListener("click", (e) => {
 });
 document.addEventListener("click", () => { appleMenu.style.display = "none"; });
 
-document.getElementById("menu-browser").onclick = () => openBrowserWindow("Retina", "browser", "https://duckduckgo.com", true);
+document.getElementById("menu-browser").onclick = () => openBrowserWindow("Retina", "browser", "https://duckduckgo.com", true, true);
 document.getElementById("menu-arcade").onclick = () => openGnMathArcade();
 document.getElementById("menu-studio").onclick = () => openCodeStudioWindow();
 document.getElementById("menu-settings").onclick = () => openSettingsWindow();
