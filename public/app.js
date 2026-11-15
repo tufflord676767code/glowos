@@ -263,15 +263,18 @@ function saveInstalledGames(list) {
 
 function getCustomCatalog() {return JSON.parse(localStorage.getItem("novaos_custom_games") || "[]");
 }
+const GN_ZONES_FEED = "https://jsdelivr.net";
+
 function openGnMathArcade() {
-  createWindow("App Store & Games", "arcade", (body) => {
+  createWindow("App Store & Games", "arcade", async (body) => {
     let activeTab = "discover";
     let query = "";
+    let remoteGames = [];
 
     const tabDiscover = el("button", { className: "store-tab active", textContent: "Discover" });
     const tabLibrary = el("button", { className: "store-tab", textContent: "My Library" });
     const tabPortals = el("button", { className: "store-tab", textContent: "Full Portals" });
-    const searchInput = el("input", { className: "store-search", placeholder: "Search games..." });
+    const searchInput = el("input", { className: "store-search", placeholder: "Search 900+ local & gn-math.dev games..." });
 
     const nav = el("div", { className: "store-nav" }, [
       el("div", { className: "store-tabs" }, [tabDiscover, tabLibrary, tabPortals]),
@@ -304,12 +307,11 @@ function openGnMathArcade() {
           saveInstalledGames(installed);
         }
         renderStore();
-      }, 450);
+      }, 350);
     }
 
     function offloadGame(id) {
-      const updated = getInstalledGames().filter(g => g.id !== id);
-      saveInstalledGames(updated);
+      saveInstalledGames(getInstalledGames().filter(g => g.id !== id));
       renderStore();
     }
 
@@ -342,7 +344,15 @@ function openGnMathArcade() {
       const installedIds = new Set(installed.map(g => g.id));
 
       if (activeTab === "portals") {
-        const portalGrid = el("div", { className: "store-grid" }, [
+        content.appendChild(el("div", { className: "store-grid" }, [
+          el("div", { className: "store-card" }, [
+            el("div", { className: "store-icon", textContent: "🎮" }),
+            el("div", { className: "store-meta" }, [
+              el("div", { className: "store-name", textContent: "gn-math.dev Hub" }),
+              el("div", { className: "store-sub", textContent: "gn-math.dev · Full Unblocked Game Library" })
+            ]),
+            el("button", { className: "btn-play", textContent: "Open", onclick: () => openBrowserWindow("gn-math.dev", "arcade", "https://gn-math.dev", true, true) })
+          ]),
           el("div", { className: "store-card" }, [
             el("div", { className: "store-icon", textContent: "🕹️" }),
             el("div", { className: "store-meta" }, [
@@ -358,28 +368,18 @@ function openGnMathArcade() {
               el("div", { className: "store-sub", textContent: "crazygames.com · Multiplayer & 3D Web Games" })
             ]),
             el("button", { className: "btn-play", textContent: "Open", onclick: () => openBrowserWindow("CrazyGames", "arcade", "https://crazygames.com", true, true) })
-          ]),
-          el("div", { className: "store-card" }, [
-            el("div", { className: "store-icon", textContent: "🍄" }),
-            el("div", { className: "store-meta" }, [
-              el("div", { className: "store-name", textContent: "Truffled Catalog" }),
-              el("div", { className: "store-sub", textContent: "truffled.lol · Classic Web Games" })
-            ]),
-            el("button", { className: "btn-play", textContent: "Open", onclick: () => openBrowserWindow("Truffled", "arcade", "https://truffled.lol", true, true) })
           ])
-        ]);
-        content.appendChild(portalGrid);
+        ]));
         return;
       }
 
       if (activeTab === "discover") {
         const nameIn = el("input", { placeholder: "Custom Game Title" });
-        const urlIn = el("input", { placeholder: "Paste Game URL" });
+        const urlIn = el("input", { placeholder: "Direct Game URL (e.g. https://gn-math.dev?id=12)" });
         const addBtn = el("button", { textContent: "+ Add to Store", onclick: () => {
           if (!nameIn.value.trim() || !urlIn.value.trim()) return;
           const custom = getCustomCatalog();
-          const newGame = { id: "cust-" + Date.now(), name: nameIn.value.trim(), source: "Custom", cat: "Web", icon: "🕹️", url: urlIn.value.trim() };
-          custom.unshift(newGame);
+          custom.unshift({ id: "cust-" + Date.now(), name: nameIn.value.trim(), source: "Custom", cat: "Web", icon: "🕹️", url: urlIn.value.trim(), local: false });
           localStorage.setItem("novaos_custom_games", JSON.stringify(custom));
           nameIn.value = "";
           urlIn.value = "";
@@ -388,8 +388,15 @@ function openGnMathArcade() {
         content.appendChild(el("div", { className: "add-game-bar" }, [nameIn, urlIn, addBtn]));
       }
 
-      const pool = activeTab === "library" ? installed : [...getCustomCatalog(), ...STORE_CATALOG];
-      const filtered = pool.filter(g => g.name.toLowerCase().includes(query) || g.cat.toLowerCase().includes(query));
+      const localNames = new Set(STORE_CATALOG.map(g => g.name.toLowerCase()));
+      const dedupedRemote = remoteGames.filter(g => !localNames.has(g.name.toLowerCase()));
+      const pool = activeTab === "library"
+        ? installed
+        : [...getCustomCatalog(), ...STORE_CATALOG, ...dedupedRemote];
+
+      const filtered = pool
+        .filter(g => g.name.toLowerCase().includes(query) || g.cat.toLowerCase().includes(query) || g.source.toLowerCase().includes(query))
+        .slice(0, 160);
 
       if (!filtered.length) {
         content.appendChild(el("div", {
@@ -405,10 +412,30 @@ function openGnMathArcade() {
     }
 
     renderStore();
+
+    try {
+      const res = await fetch(GN_ZONES_FEED);
+      const zones = await res.json();
+      remoteGames = zones
+        .filter(z => z && z.name && Number(z.id) >= 0)
+        .map(z => ({
+          id: "gn-" + z.id,
+          name: z.name,
+          source: "gn-math.dev",
+          cat: "Web",
+          icon: "🎮",
+          url: `https://gn-math.dev?id=${z.id}`,
+          local: false
+        }));
+      renderStore();
+    } catch (err) {
+      console.warn("gn-math.dev feed unavailable on this network:", err);
+    }
   });
 }
 const GLOW_LINK_VAULT = [
   { name: "Glow Chat (Primary)", url: "https://web.app", tag: "Social", icon: "💬", proxy: true },
+  { name: "gn-math.dev (All Games)", url: "https://gn-math.dev", tag: "Games", icon: "🎮", proxy: true },
   { name: "Poki Games", url: "https://poki.com", tag: "Games", icon: "🕹️", proxy: true },
   { name: "CrazyGames", url: "https://crazygames.com", tag: "Games", icon: "🔥", proxy: true },
   { name: "Truffled Portal", url: "https://truffled.lol", tag: "Games", icon: "🍄", proxy: true },
