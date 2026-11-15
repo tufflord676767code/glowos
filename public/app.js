@@ -12,8 +12,6 @@ let proxyPromise = null;
 function ensureProxy() {
   if (proxyPromise) return proxyPromise;
   proxyPromise = (async () => {
-    const pill = document.getElementById("proxy-pill");
-    if (pill) pill.textContent = "Proxy: Booting...";
     await navigator.serviceWorker.register("/sw.js", { scope: "/" });
     await navigator.serviceWorker.ready;
 
@@ -31,10 +29,6 @@ function ensureProxy() {
 
     const connection = new BareMux.BareMuxConnection("/baremux/worker.js");
     await connection.setTransport("/bare/index.mjs", [location.origin + "/bare/"]);
-    if (pill) {
-      pill.textContent = "Proxy: Active";
-      pill.classList.add("ready");
-    }
   })().catch(err => {
     proxyPromise = null;
     console.error("Proxy init error:", err);
@@ -57,6 +51,7 @@ function getAllApps() {
 
 function renderDock() {
   const dock = document.getElementById("dock");
+  if (!dock) return;
   dock.innerHTML = "";
 
   getAllApps().forEach((app, idx) => {
@@ -287,7 +282,7 @@ function openCodeStudioWindow() {
     status.style.cssText = "font-size:12px; color:#94a3b8; margin-left:auto;";
 
     const edHtml = el("textarea", { className: "studio-ed", value: "<h1>Hello NovaOS!</h1>" });
-    const edCss = el("textarea", { className: "studio-ed", value: "body { font-family: -apple-system, sans-serif; color: #38bdf8; background: #0f172a; padding: 16px; }" });
+    const edCss = el("textarea", { className: "studio-ed", value: "body { font-family: -apple-system, sans-serif; color: #34d399; background: #090d16; padding: 16px; }" });
     const edJs = el("textarea", { className: "studio-ed", value: "console.log('Running inside NovaOS');" });
     const webCols = el("div", { className: "studio-col" }, [edHtml, edCss, edJs]);
 
@@ -365,7 +360,7 @@ function openSettingsWindow() {
       scUrl.value = "";
     }});
 
-    const wpInput = el("input", { placeholder: "Paste wallpaper image URL (or leave blank for macOS wave)..." });
+    const wpInput = el("input", { placeholder: "Custom wallpaper URL (leave blank for Matrix rain)..." });
     const wpBtn = el("button", { textContent: "Apply", onclick: () => {
       localStorage.setItem("novaos_wallpaper", wpInput.value.trim());
       applySavedPreferences();
@@ -400,9 +395,7 @@ function applyCloak(title, iconUrl) {
 function applySavedPreferences() {
   const wp = localStorage.getItem("novaos_wallpaper");
   const desktop = document.getElementById("desktop");
-  if (wp) {
-    desktop.style.backgroundImage = `url('${wp}')`;
-  }
+  desktop.style.backgroundImage = wp ? `url('${wp}')` : "none";
 }
 
 const appleBtn = document.getElementById("apple-btn");
@@ -413,12 +406,61 @@ appleBtn.addEventListener("click", (e) => {
 });
 document.addEventListener("click", () => { appleMenu.style.display = "none"; });
 
+document.getElementById("menu-browser").onclick = () => openBrowserWindow("Safari", "browser", "https://duckduckgo.com", true);
+document.getElementById("menu-arcade").onclick = () => openGnMathArcade();
+document.getElementById("menu-studio").onclick = () => openCodeStudioWindow();
+document.getElementById("menu-settings").onclick = () => openSettingsWindow();
+
+document.getElementById("drop-settings").onclick = () => openSettingsWindow();
+document.getElementById("drop-studio").onclick = () => openCodeStudioWindow();
+document.getElementById("drop-arcade").onclick = () => openGnMathArcade();
+document.getElementById("drop-restart").onclick = () => location.reload();
+
 function updateClock() {
   const now = new Date();
   document.getElementById("clock").textContent = now.toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" }) + "  " + now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 updateClock();
 setInterval(updateClock, 1000);
+
+(function initMatrix() {
+  const canvas = document.getElementById("matrix-bg");
+  const ctx = canvas.getContext("2d");
+  const chars = "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let cols = 0, drops = [];
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    cols = Math.floor(canvas.width / 18);
+    drops = Array(cols).fill(1).map(() => Math.random() * -50);
+  }
+  resize();
+  window.addEventListener("resize", resize);
+
+  setInterval(() => {
+    ctx.fillStyle = "rgba(2, 8, 4, 0.08)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.font = "16px monospace";
+
+    for (let i = 0; i < drops.length; i++) {
+      const char = chars[Math.floor(Math.random() * chars.length)];
+      const x = i * 18;
+      const y = drops[i] * 18;
+
+      ctx.fillStyle = Math.random() > 0.85 ? "#a7f3d0" : "#10b981";
+      ctx.shadowColor = "#34d399";
+      ctx.shadowBlur = 8;
+      ctx.fillText(char, x, y);
+      ctx.shadowBlur = 0;
+
+      if (y > canvas.height && Math.random() > 0.975) {
+        drops[i] = 0;
+      }
+      drops[i]++;
+    }
+  }, 45);
+})();
 
 applySavedPreferences();
 renderDock();
