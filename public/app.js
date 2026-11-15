@@ -9,7 +9,7 @@ const APP_ICONS = {
 
 const coreApps = [
   { id: "browser", name: "Retina", svg: APP_ICONS.browser, kind: "browser", url: "https://duckduckgo.com" },
-  { id: "glow", name: "Glow Chat", svg: APP_ICONS.glow, kind: "browser", url: "https://glowchat-7b6b3.web.app/" },
+  { id: "glow", name: "Glow Chat", svg: APP_ICONS.glow, kind: "browser", url: "https://web.app" },
   { id: "arcade", name: "Games", svg: APP_ICONS.arcade, kind: "arcade" },
   { id: "links", name: "Glow Links", svg: APP_ICONS.links, kind: "links" },
   { id: "studio", name: "Code Studio", svg: APP_ICONS.studio, kind: "studio" },
@@ -171,7 +171,7 @@ function openBrowserWindow(title, appId, initialUrl, useProxy = true, showBar = 
 
     async function navigate(raw) {
       let target = raw.trim();
-      if (!target.startsWith("http://") && !target.startsWith("https://")) {
+      if (useProxy && !target.startsWith("http://") && !target.startsWith("https://")) {
         target = target.includes(".") && !target.includes(" ")
           ? "https://" + target
           : "https://duckduckgo.com" + encodeURIComponent(target);
@@ -199,18 +199,58 @@ function openBrowserWindow(title, appId, initialUrl, useProxy = true, showBar = 
 }
 
 const STORE_CATALOG = [
-  { id: "opium-main", name: "Opium Master Library (3,712 Games)", source: "Opium", cat: "All-in-One", icon: "💎", url: "https://opium.best" },
-  { id: "slope", name: "Slope", source: "Opium · GN-math", cat: "Arcade", icon: "🟢", url: "https://opium.best" },
-  { id: "1v1lol", name: "1v1.LOL", source: "Opium · CKV", cat: "Action", icon: "🎯", url: "https://opium.best" },
-  { id: "retrobowl", name: "Retro Bowl", source: "Opium · GN-math", cat: "Sports", icon: "🏈", url: "https://opium.best" },
-  { id: "bitlife", name: "BitLife", source: "Opium · Truffled", cat: "Simulation", icon: "🧬", url: "https://opium.best" },
-  { id: "drifthunters", name: "Drift Hunters", source: "Opium · CKV", cat: "Racing", icon: "🏎️", url: "https://opium.best" },
-  { id: "minecraft", name: "Eaglercraft 1.8", source: "Opium · Selenite", cat: "Sandbox", icon: "⛏️", url: "https://opium.best" },
-  { id: "subwaysurfers", name: "Subway Surfers", source: "Truffled", cat: "Runner", icon: "🛹", url: "https://truffled.lol" },
-  { id: "geometrydash", name: "Geometry Dash", source: "Opium · GN-math", cat: "Rhythm", icon: "🟦", url: "https://opium.best" },
-  { id: "cookieclicker", name: "Cookie Clicker", source: "Opium · Truffled", cat: "Idle", icon: "🍪", url: "https://opium.best" },
-  { id: "basketrandom", name: "Basket Random", source: "Opium · CKV", cat: "Sports", icon: "🏀", url: "https://opium.best" },
-  { id: "fnaf", name: "FNAF Collection", source: "Opium · Selenite", cat: "Horror", icon: "🐻", url: "https://opium.best" }
+  { id: "ages-of-conflict", name: "Ages of Conflict", source: "Local", cat: "Strategy", icon: "🗺️", url: "/games/Ages%20of%20Conflict.html", local: true },
+  { id: "angry-birds", name: "Angry Birds", source: "Local", cat: "Arcade", icon: "🐦", url: "/games/Angry%20Birds.html", local: true },
+  { id: "baldis-basics-plus", name: "Baldi's Basics Plus", source: "Local", cat: "Horror", icon: "📏", url: "/games/Baldi's%20Basics%20Plus.html", local: true },
+  { id: "basket-battle", name: "Basket Battle", source: "Local", cat: "Sports", icon: "🏀", url: "/games/Basket%20Battle.html", local: true },
+  { id: "basket-bros", name: "Basket Bros", source: "Local", cat: "Sports", icon: "⛹️", url: "/games/Basket%20Bros.html", local: true },
+  { id: "basket-random", name: "Basket Random", source: "Local", cat: "Sports", icon: "🏀", url: "/games/Basket%20Random.html", local: true },
+  { id: "bitlife", name: "BitLife", source: "Local", cat: "Simulation", icon: "🧬", url: "/games/BitLife.html", local: true },
+  { id: "bloxorz", name: "Bloxorz", source: "Local", cat: "Puzzle", icon: "🧊", url: "/games/Bloxorz.html", local: true },
+  { id: "bridge-race", name: "Bridge Race", source: "Local", cat: "Arcade", icon: "🌉", url: "/games/Bridge%20Race.html", local: true },
+  { id: "buckshot-roulette", name: "Buckshot Roulette", source: "Local", cat: "Horror", icon: "🎲", url: "/games/Buckshot%20Roulette.html", local: true },
+  { id: "candy-crush", name: "Candy Crush", source: "Local", cat: "Puzzle", icon: "🍬", url: "/games/Candy%20Crush.html", local: true },
+  { id: "cannon-balls-3d", name: "Cannon Balls 3D", source: "Local", cat: "Arcade", icon: "💣", url: "/games/Cannon%20Balls%203D.html", local: true },
+  { id: "circloo-2", name: "CircloO 2", source: "Local", cat: "Platformer", icon: "⭕", url: "/games/CircloO%202.html", local: true },
+  { id: "circloo", name: "CircloO", source: "Local", cat: "Platformer", icon: "⭕", url: "/games/CircloO.html", local: true },
+  { id: "clash-of-vikings", name: "Clash Of Vikings", source: "Local", cat: "Strategy", icon: "⚔️", url: "/games/Clash%20Of%20Vikings.html", local: true },
+  { id: "cluster-rush", name: "Cluster Rush", source: "Local", cat: "Action", icon: "🚚", url: "/games/Cluster%20Rush.html", local: true },
+  { id: "coreball", name: "Coreball", source: "Local", cat: "Arcade", icon: "🎯", url: "/games/Coreball.html", local: true },
+  { id: "cut-the-rope", name: "Cut the Rope", source: "Local", cat: "Puzzle", icon: "🐸", url: "/games/Cut%20the%20Rope.html", local: true },
+  { id: "cut-the-rope-holiday", name: "Cut the Rope: Holiday Gift", source: "Local", cat: "Puzzle", icon: "🎁", url: "/games/Cut%20the%20Rope_%20Holiday%20Gift.html", local: true },
+  { id: "cut-the-rope-time", name: "Cut the Rope: Time Travel", source: "Local", cat: "Puzzle", icon: "⏳", url: "/games/Cut%20the%20Rope_%20Time%20Travel.html", local: true },
+  { id: "death-run-3d", name: "Death Run 3D", source: "Local", cat: "Runner", icon: "⚡", url: "/games/Death%20Run%203D.html", local: true },
+  { id: "draw-joust", name: "Draw Joust", source: "Local", cat: "Action", icon: "✏️", url: "/games/Draw%20Joust.html", local: true },
+  { id: "drift-boss", name: "Drift Boss", source: "Local", cat: "Racing", icon: "🏎️", url: "/games/Drift%20Boss.html", local: true },
+  { id: "eaglercraftx", name: "EaglercraftX", source: "Local", cat: "Sandbox", icon: "⛏️", url: "/games/EaglercraftX.html", local: true },
+  { id: "evolving-bombs-3d", name: "Evolving Bombs 3D", source: "Local", cat: "Arcade", icon: "💥", url: "/games/Evolving%20Bombs%203D%20(1).html", local: true },
+  { id: "fnac-1", name: "Five Nights at Candy's", source: "Local", cat: "Horror", icon: "🐱", url: "/games/Five%20Nights%20at%20Candy's.html", local: true },
+  { id: "fnac-2", name: "Five Nights at Candy's 2", source: "Local", cat: "Horror", icon: "🐱", url: "/games/Five%20Nights%20at%20Candy's%202.html", local: true },
+  { id: "fnaf-1", name: "Five Nights at Freddy's", source: "Local", cat: "Horror", icon: "🐻", url: "/games/Five%20Nights%20at%20Freddy's.html", local: true },
+  { id: "fnaf-2", name: "Five Nights at Freddy's 2", source: "Local", cat: "Horror", icon: "🐻", url: "/games/Five%20Nights%20at%20Freddy's%202.html", local: true },
+  { id: "fnaf-3", name: "Five Nights at Freddy's 3", source: "Local", cat: "Horror", icon: "🐰", url: "/games/Five%20Nights%20at%20Freddy's%203.html", local: true },
+  { id: "fnaf-4", name: "Five Nights at Freddy's 4", source: "Local", cat: "Horror", icon: "🐻", url: "/games/Five%20Nights%20at%20Freddy's%204.html", local: true },
+  { id: "fnaf-4-halloween", name: "FNAF 4: Halloween", source: "Local", cat: "Horror", icon: "🎃", url: "/games/Five%20Nights%20at%20Freddy's%204_%20Halloween.html", local: true },
+  { id: "fnaf-pizzeria", name: "FNAF: Pizza Simulator", source: "Local", cat: "Horror", icon: "🍕", url: "/games/Five%20Nights%20at%20Freddy's_%20Pizza%20Simulator.html", local: true },
+  { id: "fnaf-sister", name: "FNAF: Sister Location", source: "Local", cat: "Horror", icon: "🤡", url: "/games/Five%20Nights%20at%20Freddy's_%20Sister%20Location.html", local: true },
+  { id: "fnaf-ucn", name: "FNAF: Ultimate Custom Night", source: "Local", cat: "Horror", icon: "🐻", url: "/games/Five%20Nights%20at%20Freddy's_%20Ultimate%20Custom%20Night.html", local: true },
+  { id: "fnaf-world", name: "FNAF: World", source: "Local", cat: "RPG", icon: "🌍", url: "/games/Five%20Nights%20at%20Freddy's_%20World.html", local: true },
+  { id: "fnaw", name: "Five Nights at Winston's", source: "Local", cat: "Horror", icon: "🦍", url: "/games/Five%20Nights%20at%20Winston's.html", local: true },
+  { id: "get-a-virus-sim", name: "Get A Virus Sim", source: "Local", cat: "Simulation", icon: "🦠", url: "/games/Get%20A%20Virus%20Sim.html", local: true },
+  { id: "granny", name: "Granny", source: "Local", cat: "Horror", icon: "👵", url: "/games/Granny.html", local: true },
+  { id: "man-runner-2048", name: "Man Runner 2048", source: "Local", cat: "Runner", icon: "🏃", url: "/games/Man%20Runner%202048.html", local: true },
+  { id: "mob-control", name: "Mob Control HTML5", source: "Local", cat: "Arcade", icon: "👥", url: "/games/Mob%20Control%20HTML5.html", local: true },
+  { id: "repo", name: "R.E.P.O.", source: "Local", cat: "Horror", icon: "🤖", url: "/games/R.E.P.O.html", local: true },
+  { id: "schoolboy-runaway", name: "Schoolboy Runaway", source: "Local", cat: "Stealth", icon: "🎒", url: "/games/Schoolboy%20Runaway.html", local: true },
+  { id: "pong-wars", name: "Pong Wars", source: "Local", cat: "Arcade", icon: "🏓", url: "/games/pong%20wars.html", local: true },
+  { id: "emulator-js", name: "EmulatorJS (Retro Consoles)", source: "Emulator", cat: "Emulator", icon: "🕹️", url: "/emulators/Emulator.JS.html", local: true },
+  { id: "play-js", name: "Play! PS2 Emulator", source: "Emulator", cat: "Emulator", icon: "🎮", url: "/emulators/Play!.js.html", local: true },
+  { id: "ruffle", name: "Ruffle Flash Emulator", source: "Emulator", cat: "Emulator", icon: "⚡", url: "/emulators/Ruffle.html", local: true },
+  { id: "tool-html-launcher", name: "HTML Launcher", source: "Tool", cat: "Utility", icon: "🚀", url: "/tools/.Html%20Launcher.html", local: true },
+  { id: "tool-code-editor", name: "HTML Code Editor", source: "Tool", cat: "Utility", icon: "📝", url: "/tools/Code%20Editor.html", local: true },
+  { id: "tool-lecture", name: "DON'T YOU LECTURE ME", source: "Tool", cat: "Meme", icon: "🗿", url: "/tools/DON'T%20YOU%20LECTURE%20ME.html", local: true },
+  { id: "tool-soundboard", name: "Soundboard", source: "Tool", cat: "Audio", icon: "🔊", url: "/tools/Soundboard.html", local: true },
+  { id: "tool-sandstone", name: "Sandstone", source: "Tool", cat: "Utility", icon: "🏜️", url: "/tools/sandstone.html", local: true }
 ];
 
 function getInstalledGames() {
@@ -221,10 +261,8 @@ function saveInstalledGames(list) {
   localStorage.setItem("novaos_installed_games", JSON.stringify(list));
 }
 
-function getCustomCatalog() {
-  return JSON.parse(localStorage.getItem("novaos_custom_games") || "[]");
+function getCustomCatalog() {return JSON.parse(localStorage.getItem("novaos_custom_games") || "[]");
 }
-
 function openGnMathArcade() {
   createWindow("App Store & Games", "arcade", (body) => {
     let activeTab = "discover";
@@ -232,7 +270,7 @@ function openGnMathArcade() {
 
     const tabDiscover = el("button", { className: "store-tab active", textContent: "Discover" });
     const tabLibrary = el("button", { className: "store-tab", textContent: "My Library" });
-    const tabPortals = el("button", { className: "store-tab", textContent: "Full Portals (3.7k+)" });
+    const tabPortals = el("button", { className: "store-tab", textContent: "Full Portals" });
     const searchInput = el("input", { className: "store-search", placeholder: "Search games..." });
 
     const nav = el("div", { className: "store-nav" }, [
@@ -279,7 +317,7 @@ function openGnMathArcade() {
       const actions = el("div", { className: "store-actions" });
       if (isInstalled) {
         actions.append(
-          el("button", { className: "btn-play", textContent: "▶ Play", onclick: () => openBrowserWindow(game.name, "arcade", game.url, true, false) }),
+          el("button", { className: "btn-play", textContent: "▶ Play", onclick: () => openBrowserWindow(game.name, "arcade", game.url, !game.local, false) }),
           el("button", { className: "btn-offload", textContent: "Offload", onclick: () => offloadGame(game.id) })
         );
       } else {
@@ -306,18 +344,26 @@ function openGnMathArcade() {
       if (activeTab === "portals") {
         const portalGrid = el("div", { className: "store-grid" }, [
           el("div", { className: "store-card" }, [
-            el("div", { className: "store-icon", textContent: "💎" }),
+            el("div", { className: "store-icon", textContent: "🕹️" }),
             el("div", { className: "store-meta" }, [
-              el("div", { className: "store-name", textContent: "Opium Games (3,712)" }),
-              el("div", { className: "store-sub", textContent: "opium.best · GN-math, CKV, Truffled & Selenite" })
+              el("div", { className: "store-name", textContent: "Poki Games" }),
+              el("div", { className: "store-sub", textContent: "poki.com · 1,000+ Instant HTML5 Games" })
             ]),
-            el("button", { className: "btn-play", textContent: "Open", onclick: () => openBrowserWindow("Opium Games", "arcade", "https://opium.best", true, true) })
+            el("button", { className: "btn-play", textContent: "Open", onclick: () => openBrowserWindow("Poki", "arcade", "https://poki.com", true, true) })
+          ]),
+          el("div", { className: "store-card" }, [
+            el("div", { className: "store-icon", textContent: "🔥" }),
+            el("div", { className: "store-meta" }, [
+              el("div", { className: "store-name", textContent: "CrazyGames" }),
+              el("div", { className: "store-sub", textContent: "crazygames.com · Multiplayer & 3D Web Games" })
+            ]),
+            el("button", { className: "btn-play", textContent: "Open", onclick: () => openBrowserWindow("CrazyGames", "arcade", "https://crazygames.com", true, true) })
           ]),
           el("div", { className: "store-card" }, [
             el("div", { className: "store-icon", textContent: "🍄" }),
             el("div", { className: "store-meta" }, [
               el("div", { className: "store-name", textContent: "Truffled Catalog" }),
-              el("div", { className: "store-sub", textContent: "truffled.lol · 500+ Web Games" })
+              el("div", { className: "store-sub", textContent: "truffled.lol · Classic Web Games" })
             ]),
             el("button", { className: "btn-play", textContent: "Open", onclick: () => openBrowserWindow("Truffled", "arcade", "https://truffled.lol", true, true) })
           ])
@@ -328,7 +374,7 @@ function openGnMathArcade() {
 
       if (activeTab === "discover") {
         const nameIn = el("input", { placeholder: "Custom Game Title" });
-        const urlIn = el("input", { placeholder: "Paste Opium/Truffled Game URL" });
+        const urlIn = el("input", { placeholder: "Paste Game URL" });
         const addBtn = el("button", { textContent: "+ Add to Store", onclick: () => {
           if (!nameIn.value.trim() || !urlIn.value.trim()) return;
           const custom = getCustomCatalog();
@@ -362,8 +408,9 @@ function openGnMathArcade() {
   });
 }
 const GLOW_LINK_VAULT = [
-  { name: "Glow Chat (Primary)", url: "https://glowchat-7b6b3.web.app/", tag: "Social", icon: "💬", proxy: true },
-  { name: "Opium Games (3,712)", url: "https://opium.best", tag: "Games", icon: "💎", proxy: true },
+  { name: "Glow Chat (Primary)", url: "https://web.app", tag: "Social", icon: "💬", proxy: true },
+  { name: "Poki Games", url: "https://poki.com", tag: "Games", icon: "🕹️", proxy: true },
+  { name: "CrazyGames", url: "https://crazygames.com", tag: "Games", icon: "🔥", proxy: true },
   { name: "Truffled Portal", url: "https://truffled.lol", tag: "Games", icon: "🍄", proxy: true },
   { name: "DuckDuckGo Search", url: "https://duckduckgo.com", tag: "Search", icon: "🦆", proxy: true }
 ];
@@ -681,3 +728,4 @@ setInterval(updateClock, 1000);
 
 applySavedPreferences();
 renderDock();
+
