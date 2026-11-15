@@ -8,33 +8,32 @@
   <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
-  <!-- macOS Top Menu Bar -->
+  <canvas id="matrix-bg"></canvas>
+
   <header id="menubar">
     <div class="menu-left">
       <span class="apple-logo" id="apple-btn"></span>
       <strong id="active-app-name">Finder</strong>
-      <span class="menu-item" onclick="openBrowserWindow('Safari', '🧭', 'https://duckduckgo.com', true)">File</span>
-      <span class="menu-item" onclick="openGnMathArcade()">Games</span>
-      <span class="menu-item" onclick="openSettingsWindow()">Settings</span>
+      <span class="menu-item" id="menu-browser">Safari</span>
+      <span class="menu-item" id="menu-arcade">Arcade</span>
+      <span class="menu-item" id="menu-studio">Code</span>
+      <span class="menu-item" id="menu-settings">Settings</span>
     </div>
     <div class="menu-right">
-      <span class="status-pill" id="proxy-pill">Proxy: Standby</span>
       <span id="clock"></span>
     </div>
   </header>
 
-  <!-- Apple Dropdown Menu -->
   <div id="apple-menu">
-    <div class="drop-item" onclick="openSettingsWindow()">System Settings...</div>
-    <div class="drop-item" onclick="openCodeStudioWindow()">Code Studio</div>
+    <div class="drop-item" id="drop-settings">System Settings...</div>
+    <div class="drop-item" id="drop-studio">Code Studio</div>
+    <div class="drop-item" id="drop-arcade">gn-math Arcade</div>
     <div class="drop-sep"></div>
-    <div class="drop-item" onclick="location.reload()">Restart NovaOS</div>
+    <div class="drop-item" id="drop-restart">Restart NovaOS</div>
   </div>
 
-  <!-- Desktop Workspace -->
   <main id="desktop"></main>
 
-  <!-- Floating macOS Glass Dock -->
   <footer id="dock-wrap">
     <div id="dock"></div>
   </footer>
