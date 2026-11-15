@@ -3,25 +3,44 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GlowOS</title>
-  <link id="favicon" rel="icon" href="data:image/svg+xml,<svg xmlns='http://w3.org' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
+  <title>NovaOS</title>
+  <link id="favicon" rel="icon" href="data:image/svg+xml,<svg xmlns='http://w3.org' viewBox='0 0 100 100'><text y='.9em' font-size='90'></text></svg>" />
   <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
-  <div id="desktop"></div>
-  <div id="start-menu">
-    <div class="start-header">APPLICATIONS</div>
-    <div id="start-list"></div>
+  <!-- macOS Top Menu Bar -->
+  <header id="menubar">
+    <div class="menu-left">
+      <span class="apple-logo" id="apple-btn"></span>
+      <strong id="active-app-name">Finder</strong>
+      <span class="menu-item" onclick="openBrowserWindow('Safari', '🧭', 'https://duckduckgo.com', true)">File</span>
+      <span class="menu-item" onclick="openGnMathArcade()">Games</span>
+      <span class="menu-item" onclick="openSettingsWindow()">Settings</span>
+    </div>
+    <div class="menu-right">
+      <span class="status-pill" id="proxy-pill">Proxy: Standby</span>
+      <span id="clock"></span>
+    </div>
+  </header>
+
+  <!-- Apple Dropdown Menu -->
+  <div id="apple-menu">
+    <div class="drop-item" onclick="openSettingsWindow()">System Settings...</div>
+    <div class="drop-item" onclick="openCodeStudioWindow()">Code Studio</div>
+    <div class="drop-sep"></div>
+    <div class="drop-item" onclick="location.reload()">Restart NovaOS</div>
   </div>
-  <div id="taskbar">
-    <button id="start-btn">⚡ NovaOS</button>
-    <div id="taskbar-apps"></div>
-    <div id="clock"></div>
-  </div>
+
+  <!-- Desktop Workspace -->
+  <main id="desktop"></main>
+
+  <!-- Floating macOS Glass Dock -->
+  <footer id="dock-wrap">
+    <div id="dock"></div>
+  </footer>
+
   <script src="/baremux/index.js"></script>
   <script src="/scram/scramjet.all.js"></script>
-  <script src="https://jsdelivr.net"></script>
   <script src="/app.js"></script>
 </body>
 </html>
- 
