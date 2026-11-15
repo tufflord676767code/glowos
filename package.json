@@ -5,11 +5,11 @@
     "build": "mkdir -p public/scram public/baremux public/bare && cp node_modules/@mercuryworkshop/scramjet/dist/* public/scram/ && cp node_modules/@mercuryworkshop/bare-mux/dist/* public/baremux/ && cp node_modules/@mercuryworkshop/bare-as-module3/dist/* public/bare/"
   },
   "devDependencies": {
-    "wrangler": "^3.90.0"
+    "wrangler": "latest"
   },
   "dependencies": {
-    "@mercuryworkshop/bare-as-module3": "^1.0.4",
-    "@mercuryworkshop/bare-mux": "^2.1.7",
-    "@mercuryworkshop/scramjet": "^2.0.0-alpha"
+    "@mercuryworkshop/bare-as-module3": "latest",
+    "@mercuryworkshop/bare-mux": "latest",
+    "@mercuryworkshop/scramjet": "latest"
   }
 }
