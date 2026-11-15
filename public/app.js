@@ -224,6 +224,7 @@ function saveInstalledGames(list) {
 function getCustomCatalog() {
   return JSON.parse(localStorage.getItem("novaos_custom_games") || "[]");
 }
+
 function openGnMathArcade() {
   createWindow("App Store & Games", "arcade", (body) => {
     let activeTab = "discover";
@@ -353,10 +354,219 @@ function openGnMathArcade() {
       }
 
       const grid = el("div", { className: "store-grid" });
-      filtered.forEach(g => grid.appendChild(renderCard(g, installedIds.has(g.id))));
+      filtered.forEach(g => grid.appendChild(renderCard(g, installedIds.has(g.id)))); 
       content.appendChild(grid);
-    }
+}
+renderStore();
+});
+}
+}
 
-    renderStore();
+let pyodideInstance = null;
+function loadPyodideLazy() {
+  if (window.loadPyodide) return window.loadPyodide();
+  return new Promise((resolve, reject) => {
+    const s = document.createElement("script");
+    s.src = "https://jsdelivr.net";
+    s.onload = () => window.loadPyodide().then(resolve, reject);
+    s.onerror = reject;
+    document.head.appendChild(s);
   });
 }
+
+function openCodeStudioWindow() {
+  createWindow("Code Studio", "studio", (body) => {
+    const sel = el("select", {}, [
+      el("option", { value: "web", textContent: "HTML / CSS / JS" }),
+      el("option", { value: "python", textContent: "Python 3 (Pyodide)" })
+    ]);
+    const runBtn = el("button", { textContent: "▶ Run" });
+    const status = el("span", { textContent: "Ready" });
+    status.style.cssText = "font-size:12px; color:#94a3b8; margin-left:auto;";
+
+    const edHtml = el("textarea", { className: "studio-ed", value: "<h1>Hello NovaOS!</h1>" });
+    const edCss = el("textarea", { className: "studio-ed", value: "body { font-family: -apple-system, sans-serif; color: #34d399; background: #090d16; padding: 16px; }" });
+    const edJs = el("textarea", { className: "studio-ed", value: "console.log('Running inside NovaOS');" });
+    const webCols = el("div", { className: "studio-col" }, [edHtml, edCss, edJs]);
+
+    const edPy = el("textarea", { className: "studio-ed", value: "for i in range(5):\n    print(f'Python step {i}')" });
+    edPy.style.display = "none";
+
+    const webOut = el("iframe", { className: "app-frame" });
+    webOut.sandbox = "allow-scripts";
+    const pyOut = el("pre", { className: "studio-pre" });
+
+    body.append(
+      el("div", { className: "studio-bar" }, [sel, runBtn, status]),
+      el("div", { className: "studio-main" }, [webCols, edPy, el("div", { className: "studio-out" }, [webOut, pyOut])])
+    );
+
+    sel.onchange = () => {
+      const isWeb = sel.value === "web";
+      webCols.style.display = isWeb ? "flex" : "none";
+      webOut.style.display = isWeb ? "block" : "none";
+      edPy.style.display = isWeb ? "none" : "block";
+      pyOut.style.display = isWeb ? "none" : "block";
+    };
+
+    runBtn.onclick = async () => {
+      if (sel.value === "web") {
+        const doc = webOut.contentDocument;
+        doc.open();
+        doc.write(edHtml.value);
+        const s = doc.createElement("style");
+        s.textContent = edCss.value;
+        doc.head.appendChild(s);
+        const j = doc.createElement("script");
+        j.textContent = edJs.value;
+        doc.body.appendChild(j);
+        doc.close();
+        status.textContent = "Rendered Web Output";
+      } else {
+        if (!pyodideInstance) {
+          status.textContent = "Loading Python WASM...";
+          pyodideInstance = await loadPyodideLazy();
+        }
+        status.textContent = "Running Python...";
+        pyOut.textContent = "";
+        pyodideInstance.setStdout({ batched: m => { pyOut.textContent += m + "\n"; } });
+        pyodideInstance.setStderr({ batched: m => { pyOut.textContent += "[Error] " + m + "\n"; } });
+        try {
+          await pyodideInstance.runPythonAsync(edPy.value);
+          status.textContent = "Done";
+        } catch (err) {
+          pyOut.textContent += err.toString();
+          status.textContent = "Error";
+        }
+      }
+    };
+  });
+}
+
+function openSettingsWindow() {
+  createWindow("System Settings", "settings", (body) => {
+    const scName = el("input", { placeholder: "App Name (e.g. YouTube)" });
+    const scUrl = el("input", { placeholder: "https://youtube.com" });
+    const scIcon = el("input", { placeholder: "Emoji or SVG" });
+    scIcon.style.maxWidth = "110px";
+    const scBtn = el("button", { textContent: "Add to Dock", onclick: () => {
+      const name = scName.value.trim();
+      let url = scUrl.value.trim();
+      const iconVal = scIcon.value.trim() || "🌐";
+      if (!name || !url) return;
+      if (!url.startsWith("http")) url = "https://" + url;
+      const saved = JSON.parse(localStorage.getItem("novaos_shortcuts") || "[]");
+      const entry = { id: "custom-" + Date.now(), name, kind: "proxy", url };
+      if (iconVal.startsWith("<svg")) entry.svg = iconVal;
+      else entry.icon = iconVal;
+      saved.push(entry);
+      localStorage.setItem("novaos_shortcuts", JSON.stringify(saved));
+      renderDock();
+      scName.value = "";
+      scUrl.value = "";
+    }});
+
+    const wpInput = el("input", { placeholder: "Custom wallpaper URL (leave blank for Matrix rain)..." });
+    const wpBtn = el("button", { textContent: "Apply", onclick: () => {
+      localStorage.setItem("novaos_wallpaper", wpInput.value.trim());
+      applySavedPreferences();
+    }});
+
+    body.appendChild(el("div", { className: "settings-wrap" }, [
+      el("div", { className: "setting-card" }, [
+        el("h3", { textContent: "Add App to Dock" }),
+        el("div", { className: "setting-row" }, [scName, scUrl, scIcon, scBtn])
+      ]),
+      el("div", { className: "setting-card" }, [
+        el("h3", { textContent: "Desktop Wallpaper" }),
+        el("div", { className: "setting-row" }, [wpInput, wpBtn])
+      ]),
+      el("div", { className: "setting-card" }, [
+        el("h3", { textContent: "Tab Cloak" }),
+        el("div", { className: "setting-row" }, [
+          el("button", { textContent: "Google Docs", onclick: () => applyCloak("Google Docs", "https://gstatic.com") }),
+          el("button", { textContent: "Canvas LMS", onclick: () => applyCloak("Dashboard", "https://cloudfront.net") }),
+          el("button", { textContent: "Reset", onclick: () => applyCloak("NovaOS", "") })
+        ])
+      ])
+    ]));
+  });
+}
+
+function applyCloak(title, iconUrl) {
+  document.title = title;
+  if (iconUrl) document.getElementById("favicon").href = iconUrl;
+}
+
+function applySavedPreferences() {
+  const wp = localStorage.getItem("novaos_wallpaper");
+  const desktop = document.getElementById("desktop");
+  desktop.style.backgroundImage = wp ? `url('${wp}')` : "none";
+}
+
+const appleBtn = document.getElementById("apple-btn");
+const appleMenu = document.getElementById("apple-menu");
+appleBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  appleMenu.style.display = appleMenu.style.display === "flex" ? "none" : "flex";
+});
+document.addEventListener("click", () => { appleMenu.style.display = "none"; });
+
+document.getElementById("menu-browser").onclick = () => openBrowserWindow("Retina", "browser", "https://duckduckgo.com", true, true);
+document.getElementById("menu-arcade").onclick = () => openGnMathArcade();
+document.getElementById("menu-studio").onclick = () => openCodeStudioWindow();
+document.getElementById("menu-settings").onclick = () => openSettingsWindow();
+
+document.getElementById("drop-settings").onclick = () => openSettingsWindow();
+document.getElementById("drop-studio").onclick = () => openCodeStudioWindow();
+document.getElementById("drop-arcade").onclick = () => openGnMathArcade();
+document.getElementById("drop-restart").onclick = () => location.reload();
+
+function updateClock() {
+  const now = new Date();
+  document.getElementById("clock").textContent = now.toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" }) + "  " + now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+(function initMatrix() {
+  const canvas = document.getElementById("matrix-bg");
+  const ctx = canvas.getContext("2d");
+  const chars = "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let cols = 0, drops = [];
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    cols = Math.floor(canvas.width / 18);
+    drops = Array(cols).fill(1).map(() => Math.random() * -50);
+  }
+  resize();
+  window.addEventListener("resize", resize);
+
+  setInterval(() => {
+    ctx.fillStyle = "rgba(2, 8, 4, 0.08)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.font = "16px monospace";
+
+    for (let i = 0; i < drops.length; i++) {
+      const char = chars[Math.floor(Math.random() * chars.length)];
+      const x = i * 18;
+      const y = drops[i] * 18;
+
+      ctx.fillStyle = Math.random() > 0.85 ? "#a7f3d0" : "#10b981";
+      ctx.shadowColor = "#34d399";
+      ctx.shadowBlur = 8;
+      ctx.fillText(char, x, y);
+      ctx.shadowBlur = 0;
+
+      if (y > canvas.height && Math.random() > 0.975) {
+        drops[i] = 0;
+      }
+      drops[i]++;
+    }
+  }, 45);
+})();
+
+applySavedPreferences();
+renderDock();
