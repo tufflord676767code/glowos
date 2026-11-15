@@ -1,9 +1,17 @@
+const APP_ICONS = {
+  browser: `<svg viewBox="0 0 64 64" width="34" height="34"><defs><linearGradient id="saf" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#2563eb"/></linearGradient></defs><circle cx="32" cy="32" r="28" fill="url(#saf)"/><circle cx="32" cy="32" r="24" fill="none" stroke="#fff" stroke-opacity="0.35" stroke-width="1.5"/><polygon points="32,14 37,32 32,50 27,32" fill="#fff"/><polygon points="32,14 37,32 32,32 27,32" fill="#ef4444"/></svg>`,
+  glow: `<svg viewBox="0 0 64 64" width="34" height="34"><defs><linearGradient id="glw" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs><rect x="6" y="6" width="52" height="52" rx="14" fill="url(#glw)"/><path d="M32 14 L36 28 L50 32 L36 36 L32 50 L28 36 L14 32 L28 28 Z" fill="#fff"/></svg>`,
+  arcade: `<svg viewBox="0 0 64 64" width="34" height="34"><defs><linearGradient id="arc" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#059669"/></linearGradient></defs><rect x="6" y="14" width="52" height="36" rx="14" fill="url(#arc)"/><path d="M22 25 v14 M15 32 h14" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="43" cy="28" r="3" fill="#fff"/><circle cx="49" cy="34" r="3" fill="#fff"/></svg>`,
+  studio: `<svg viewBox="0 0 64 64" width="34" height="34"><path d="M46 8 L56 13 V51 L46 56 L22 36 L12 44 L8 40 L18 32 L8 24 L12 20 L22 28 Z" fill="#007acc"/><path d="M46 8 L56 13 V51 L46 56 V8 Z" fill="#1f9cf0"/><path d="M46 20 L31 32 L46 44 V20 Z" fill="#060b19"/></svg>`,
+  settings: `<svg viewBox="0 0 64 64" width="34" height="34"><defs><linearGradient id="set" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#94a3b8"/><stop offset="100%" stop-color="#475569"/></linearGradient></defs><circle cx="32" cy="32" r="26" fill="url(#set)"/><circle cx="32" cy="32" r="10" fill="none" stroke="#fff" stroke-width="5"/><path d="M32 10 v6 M32 48 v6 M10 32 h6 M48 32 h6 M17 17 l4 4 M43 43 l4 4 M47 17 l-4 4 M21 43 l-4 4" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>`
+};
+
 const coreApps = [
-  { id: "browser", name: "Safari", icon: "🧭", kind: "browser", url: "https://duckduckgo.com" },
-  { id: "glow", name: "Glow Chat", icon: "✦", kind: "direct", url: "https://web.app", allowMic: true },
-  { id: "arcade", name: "gn-math Arcade", icon: "🎮", kind: "arcade" },
-  { id: "studio", name: "Code Studio", icon: "💻", kind: "studio" },
-  { id: "settings", name: "Settings", icon: "⚙️", kind: "settings" }
+  { id: "browser", name: "Safari", svg: APP_ICONS.browser, kind: "browser", url: "https://duckduckgo.com" },
+  { id: "glow", name: "Glow Chat", svg: APP_ICONS.glow, kind: "direct", url: "https://web.app", allowMic: true },
+  { id: "arcade", name: "gn-math Arcade", svg: APP_ICONS.arcade, kind: "arcade" },
+  { id: "studio", name: "Code Studio", svg: APP_ICONS.studio, kind: "studio" },
+  { id: "settings", name: "Settings", svg: APP_ICONS.settings, kind: "settings" }
 ];
 
 let scramjet = null;
@@ -12,12 +20,16 @@ let proxyPromise = null;
 function ensureProxy() {
   if (proxyPromise) return proxyPromise;
   proxyPromise = (async () => {
-    await navigator.serviceWorker.register("/sw.js", { scope: "/" });
+    const reg = await navigator.serviceWorker.register("/sw.js", { scope: "/" });
     await navigator.serviceWorker.ready;
+    if (!navigator.serviceWorker.controller && reg.active) {
+      await new Promise(r => setTimeout(r, 150));
+    }
 
     if (!scramjet) {
       const { ScramjetController } = $scramjetLoadController();
       scramjet = new ScramjetController({
+        prefix: "/service/",
         files: {
           wasm: "/scram/scramjet.wasm.wasm",
           all: "/scram/scramjet.all.js",
@@ -63,7 +75,13 @@ function renderDock() {
       className: "dock-item",
       id: "dock-" + app.id,
       onclick: () => launchApp(app)
-    }, [document.createTextNode(app.icon), dot]);
+    });
+    if (app.svg) {
+      item.innerHTML = app.svg;
+    } else {
+      item.textContent = app.icon || "🌐";
+    }
+    item.appendChild(dot);
     item.setAttribute("data-name", app.name);
     dock.appendChild(item);
   });
@@ -344,16 +362,19 @@ function openSettingsWindow() {
   createWindow("System Settings", "settings", (body) => {
     const scName = el("input", { placeholder: "App Name (e.g. YouTube)" });
     const scUrl = el("input", { placeholder: "https://youtube.com" });
-    const scIcon = el("input", { placeholder: "Emoji (📺)" });
-    scIcon.style.maxWidth = "90px";
+    const scIcon = el("input", { placeholder: "Emoji or SVG" });
+    scIcon.style.maxWidth = "110px";
     const scBtn = el("button", { textContent: "Add to Dock", onclick: () => {
       const name = scName.value.trim();
       let url = scUrl.value.trim();
-      const icon = scIcon.value.trim() || "🌐";
+      const iconVal = scIcon.value.trim() || "🌐";
       if (!name || !url) return;
       if (!url.startsWith("http")) url = "https://" + url;
       const saved = JSON.parse(localStorage.getItem("novaos_shortcuts") || "[]");
-      saved.push({ id: "custom-" + Date.now(), name, icon, kind: "proxy", url });
+      const entry = { id: "custom-" + Date.now(), name, kind: "proxy", url };
+      if (iconVal.startsWith("<svg")) entry.svg = iconVal;
+      else entry.icon = iconVal;
+      saved.push(entry);
       localStorage.setItem("novaos_shortcuts", JSON.stringify(saved));
       renderDock();
       scName.value = "";
