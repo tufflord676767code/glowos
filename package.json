@@ -2,7 +2,7 @@
   "name": "glowosmythos22",
   "private": true,
   "scripts": {
-    "build": "mkdir -p public/uv public/baremux public/bare && cp -r node_modules/@titaniumnetwork-dev/ultraviolet/dist/* public/uv/ && cp -r node_modules/@mercuryworkshop/bare-mux/dist/* public/baremux/ && cp -r node_modules/@mercuryworkshop/bare-as-module3/dist/* public/bare/"
+    "build": "mkdir -p public/uv public/baremux public/bare-client && cp -r node_modules/@titaniumnetwork-dev/ultraviolet/dist/* public/uv/ && cp -r node_modules/@mercuryworkshop/bare-mux/dist/* public/baremux/ && cp -r node_modules/@mercuryworkshop/bare-as-module3/dist/* public/bare-client/"
   },
   "dependencies": {
     "@mercuryworkshop/bare-as-module3": "latest",
