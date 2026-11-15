@@ -3,20 +3,25 @@ body, html {
   margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
   color: #f8fafc;
-  background: #060b19;
+  background: #020804;
 }
 
-/* macOS Sonoma/Sequoia Blue Wave Wallpaper */
+/* Matrix Canvas Wallpaper */
+#matrix-bg {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
 #desktop {
   position: fixed;
   inset: 0;
-  background:
-    radial-gradient(ellipse at 75% 20%, rgba(99, 102, 241, 0.55) 0%, transparent 55%),
-    radial-gradient(ellipse at 20% 75%, rgba(14, 165, 233, 0.45) 0%, transparent 60%),
-    linear-gradient(155deg, #0b1128 0%, #172554 45%, #1e1b4b 75%, #090d16 100%);
+  z-index: 1;
   background-size: cover;
   background-position: center;
-  padding: 44px 20px 90px;
 }
 
 /* Top Translucent Menu Bar */
@@ -24,10 +29,10 @@ body, html {
   position: fixed;
   top: 0; left: 0; right: 0;
   height: 28px;
-  background: rgba(15, 23, 42, 0.55);
+  background: rgba(4, 18, 12, 0.65);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid rgba(52, 211, 153, 0.2);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -35,36 +40,34 @@ body, html {
   font-size: 13px;
   z-index: 10000;
 }
-.menu-left, .menu-right { display: flex; align-items: center; gap: 14px; }
-.apple-logo { font-size: 15px; cursor: pointer; padding: 2px 6px; border-radius: 4px; }
-.apple-logo:hover, .menu-item:hover { background: rgba(255, 255, 255, 0.15); }
-.menu-item { cursor: pointer; padding: 2px 6px; border-radius: 4px; color: rgba(255, 255, 255, 0.9); }
-.status-pill { font-size: 11px; padding: 2px 8px; border-radius: 999px; background: rgba(255, 255, 255, 0.12); color: #93c5fd; }
-.status-pill.ready { background: rgba(34, 197, 94, 0.2); color: #86efac; }
+.menu-left, .menu-right { display: flex; align-items: center; gap: 12px; }
+.apple-logo { font-size: 15px; cursor: pointer; padding: 2px 7px; border-radius: 5px; }
+.apple-logo:hover, .menu-item:hover { background: rgba(52, 211, 153, 0.2); }
+.menu-item { cursor: pointer; padding: 2px 7px; border-radius: 5px; color: rgba(255, 255, 255, 0.92); }
 
 /* Apple Dropdown */
 #apple-menu {
   position: fixed;
   top: 32px; left: 10px;
   width: 210px;
-  background: rgba(23, 31, 52, 0.85);
+  background: rgba(6, 24, 16, 0.92);
   backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(52, 211, 153, 0.28);
   border-radius: 10px;
   padding: 5px;
   display: none;
   flex-direction: column;
-  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.7);
   z-index: 10001;
 }
-.drop-item { padding: 6px 10px; border-radius: 6px; font-size: 13px; cursor: pointer; }
-.drop-item:hover { background: #2563eb; color: #fff; }
+.drop-item { padding: 7px 10px; border-radius: 6px; font-size: 13px; cursor: pointer; }
+.drop-item:hover { background: #10b981; color: #02130b; font-weight: 600; }
 .drop-sep { height: 1px; background: rgba(255, 255, 255, 0.12); margin: 4px 0; }
 
 /* Floating macOS Glass Dock */
 #dock-wrap {
   position: fixed;
-  bottom: 10px;
+  bottom: 12px;
   left: 0; right: 0;
   display: flex;
   justify-content: center;
@@ -77,39 +80,40 @@ body, html {
   align-items: flex-end;
   gap: 10px;
   padding: 8px 14px;
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(6, 26, 18, 0.55);
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.24);
+  border: 1px solid rgba(52, 211, 153, 0.3);
   border-radius: 20px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
 }
 .dock-item {
   position: relative;
-  width: 48px;
-  height: 48px;
-  border-radius: 13px;
-  background: linear-gradient(145deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(16, 42, 32, 0.92), rgba(5, 18, 13, 0.96));
+  border: 1px solid rgba(52, 211, 153, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 25px;
+  font-size: 26px;
   cursor: pointer;
-  transition: transform 0.18s cubic-bezier(0.2, 0.9, 0.3, 1.3), margin 0.18s ease;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+  transition: transform 0.18s cubic-bezier(0.2, 0.9, 0.3, 1.3), margin 0.18s ease, box-shadow 0.18s ease;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
 }
 .dock-item:hover {
   transform: translateY(-10px) scale(1.22);
   margin: 0 6px;
+  box-shadow: 0 10px 24px rgba(16, 185, 129, 0.35);
 }
 .dock-item::after {
   content: attr(data-name);
   position: absolute;
   top: -32px;
-  background: rgba(15, 23, 42, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #fff;
+  background: rgba(4, 18, 12, 0.92);
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  color: #ecfdf5;
   font-size: 11px;
   padding: 3px 8px;
   border-radius: 6px;
@@ -125,11 +129,11 @@ body, html {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #fff;
+  background: #34d399;
   display: none;
 }
 .dock-item.open .dock-dot { display: block; }
-.dock-divider { width: 1px; height: 36px; background: rgba(255, 255, 255, 0.22); margin: 0 2px; align-self: center; }
+.dock-divider { width: 1px; height: 36px; background: rgba(52, 211, 153, 0.25); margin: 0 2px; align-self: center; }
 
 /* macOS Windows */
 .os-window {
@@ -138,16 +142,17 @@ body, html {
   height: 560px;
   max-width: 96vw;
   max-height: calc(100vh - 105px);
-  background: rgba(15, 23, 42, 0.92);
+  background: rgba(9, 17, 24, 0.94);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(52, 211, 153, 0.25);
   border-radius: 12px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   resize: both;
-  animation: winPop 0.16s ease-out;
+  z-index: 100;
+  animation: winPop 0.15s ease-out;
 }
 @keyframes winPop {
   from { opacity: 0; transform: scale(0.95); }
@@ -165,8 +170,8 @@ body, html {
 }
 .win-header {
   height: 36px;
-  background: rgba(30, 41, 59, 0.85);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(15, 28, 36, 0.9);
+  border-bottom: 1px solid rgba(52, 211, 153, 0.15);
   display: flex;
   align-items: center;
   padding: 0 12px;
@@ -176,59 +181,37 @@ body, html {
 }
 .win-header:active { cursor: grabbing; }
 .traffic-lights { display: flex; gap: 8px; z-index: 2; }
-.tl-btn {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-}
+.tl-btn { width: 12px; height: 12px; border-radius: 50%; border: none; padding: 0; cursor: pointer; }
 .tl-close { background: #ff5f56; }
 .tl-min { background: #ffbd2e; }
 .tl-max { background: #27c93f; }
-.win-title {
-  position: absolute;
-  left: 0; right: 0;
-  text-align: center;
-  font-size: 13px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
-  pointer-events: none;
-}
+.win-title { position: absolute; left: 0; right: 0; text-align: center; font-size: 13px; font-weight: 600; color: rgba(255, 255, 255, 0.92); pointer-events: none; }
 .win-body { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; background: #090d16; user-select: text; }
 
-/* Safari Browser Bar */
-.browser-bar { display: flex; gap: 8px; padding: 8px 12px; background: #1e293b; border-bottom: 1px solid rgba(255, 255, 255, 0.1); align-items: center; }
-.browser-bar input {
-  flex: 1; padding: 6px 14px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(9, 13, 22, 0.85); color: white; font-size: 13px; text-align: center;
-}
-.browser-bar input:focus { text-align: left; outline: none; border-color: #38bdf8; }
-.browser-bar button { padding: 6px 12px; border-radius: 7px; border: none; background: #2563eb; color: white; font-weight: 600; font-size: 12px; cursor: pointer; }
+/* Browser, Arcade, Studio, Settings */
+.browser-bar { display: flex; gap: 8px; padding: 8px 12px; background: #13222c; border-bottom: 1px solid rgba(255, 255, 255, 0.1); align-items: center; }
+.browser-bar input { flex: 1; padding: 6px 14px; border-radius: 8px; border: 1px solid rgba(52, 211, 153, 0.25); background: rgba(9, 13, 22, 0.9); color: white; font-size: 13px; text-align: center; }
+.browser-bar input:focus { text-align: left; outline: none; border-color: #34d399; }
+.browser-bar button { padding: 6px 12px; border-radius: 7px; border: none; background: #10b981; color: #02130b; font-weight: 700; font-size: 12px; cursor: pointer; }
 iframe.app-frame { flex: 1; width: 100%; border: none; background: #fff; }
-
-/* Arcade Grid */
 .arcade-wrap { padding: 16px; overflow-y: auto; flex: 1; }
 .arcade-top { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
-.arcade-top input { flex: 1; min-width: 180px; padding: 8px 14px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.15); background: #1e293b; color: white; }
-.arcade-top button { padding: 8px 14px; border-radius: 10px; border: none; background: #38bdf8; color: #090d16; font-weight: 700; cursor: pointer; }
+.arcade-top input { flex: 1; min-width: 180px; padding: 8px 14px; border-radius: 10px; border: 1px solid rgba(52, 211, 153, 0.25); background: #13222c; color: white; }
+.arcade-top button { padding: 8px 14px; border-radius: 10px; border: none; background: #10b981; color: #02130b; font-weight: 700; cursor: pointer; }
 .arcade-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 14px; }
-.game-card { background: #1e293b; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.15s, border-color 0.15s; }
-.game-card:hover { transform: translateY(-4px); border-color: #38bdf8; }
-.game-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; background: #0f172a; }
+.game-card { background: #13222c; border: 1px solid rgba(52, 211, 153, 0.2); border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.15s, border-color 0.15s; }
+.game-card:hover { transform: translateY(-4px); border-color: #34d399; }
+.game-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; background: #090d16; }
 .game-card div { padding: 8px; font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
-
-/* Settings & Code Studio */
 .settings-wrap { padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
-.setting-card { background: #1e293b; padding: 14px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); }
-.setting-card h3 { margin: 0 0 10px; font-size: 14px; color: #38bdf8; }
+.setting-card { background: #13222c; padding: 14px; border-radius: 12px; border: 1px solid rgba(52, 211, 153, 0.2); }
+.setting-card h3 { margin: 0 0 10px; font-size: 14px; color: #34d399; }
 .setting-row { display: flex; gap: 8px; flex-wrap: wrap; }
-.setting-row input { flex: 1; padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.15); background: #0f172a; color: white; }
-.setting-row button { padding: 8px 14px; border-radius: 8px; border: none; background: #38bdf8; color: #090d16; font-weight: 700; cursor: pointer; }
-.studio-bar { display: flex; gap: 8px; padding: 8px 12px; background: #1e293b; border-bottom: 1px solid rgba(255, 255, 255, 0.1); align-items: center; }
-.studio-bar select { background: #0f172a; color: #fff; border: 1px solid #334155; padding: 5px 10px; border-radius: 6px; }
-.studio-bar button { background: #22c55e; color: #052e16; font-weight: 700; border: none; padding: 5px 14px; border-radius: 6px; cursor: pointer; }
+.setting-row input { flex: 1; padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.15); background: #090d16; color: white; }
+.setting-row button { padding: 8px 14px; border-radius: 8px; border: none; background: #10b981; color: #02130b; font-weight: 700; cursor: pointer; }
+.studio-bar { display: flex; gap: 8px; padding: 8px 12px; background: #13222c; border-bottom: 1px solid rgba(255, 255, 255, 0.1); align-items: center; }
+.studio-bar select { background: #090d16; color: #fff; border: 1px solid #334155; padding: 5px 10px; border-radius: 6px; }
+.studio-bar button { background: #10b981; color: #02130b; font-weight: 700; border: none; padding: 5px 14px; border-radius: 6px; cursor: pointer; }
 .studio-main { display: flex; flex: 1; overflow: hidden; }
 .studio-col { display: flex; flex-direction: column; flex: 1; border-right: 1px solid #334155; }
 .studio-ed { flex: 1; background: #090d16; color: #e2e8f0; border: none; border-bottom: 1px solid #1e293b; padding: 10px; font-family: monospace; resize: none; }
