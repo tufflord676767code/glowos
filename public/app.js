@@ -1,28 +1,32 @@
-const { ScramjetController } = $scramjetLoadController();
-const scramjet = new ScramjetController({
-  files: {
-    wasm: "/scram/scramjet.wasm.wasm",
-    all: "/scram/scramjet.all.js",
-    sync: "/scram/scramjet.sync.js"
-  }
-});
-scramjet.init();
-
-const connection = new BareMux.BareMuxConnection("/baremux/worker.js");
-let proxyReady = false;
-
-async function ensureProxy() {
-  if (proxyReady) return;
-  await navigator.serviceWorker.register("/sw.js");
-  await connection.setTransport("/bare/index.mjs", [location.origin + "/bare/"]);
-  proxyReady = true;
-}
-
 const coreApps = [
   { id: "browser", name: "Nova Browser", icon: "🌐", kind: "browser", url: "https://duckduckgo.com" },
   { id: "glow", name: "Glow Chat", icon: "✦", kind: "direct", url: "https://web.app", allowMic: true },
   { id: "arcade", name: "gn-math Arcade", icon: "🎮", kind: "arcade" },
   { id: "studio", name: "Code Studio", icon: "💻", kind: "studio" },
+  { id: "settings", name: "Settings", icon: "⚙️", kind: "settings" }
+];
+
+let scramjet = null;
+let proxyReady = false;
+
+async function ensureProxy() {
+  if (proxyReady) return;
+  await navigator.serviceWorker.register("/sw.js");
+  if (!scramjet && typeof $scramjetLoadController === "function") {
+    const { ScramjetController } = $scramjetLoadController();
+    scramjet = new ScramjetController({
+      files: {
+        wasm: "/scram/scramjet.wasm.wasm",
+        all: "/scram/scramjet.all.js",
+        sync: "/scram/scramjet.sync.js"
+      }
+    });
+    await scramjet.init();
+  }
+  const connection = new BareMux.BareMuxConnection("/baremux/worker.js");
+  await connection.setTransport("/bare/index.mjs", [location.origin + "/bare/"]);
+  proxyReady = true;
+}
   { id: "settings", name: "Settings", icon: "⚙️", kind: "settings" }
 ];
 
