@@ -28,7 +28,6 @@ function ensureProxy() {
     await connection.setTransport("/bare-client/index.mjs", [location.origin + "/bare/"]);
   })().catch(err => {
     proxyPromise = null;
-    console.error("UV init error:", err);
     throw err;
   });
   return proxyPromise;
@@ -65,11 +64,8 @@ function renderDock() {
       id: "dock-" + app.id,
       onclick: () => launchApp(app)
     });
-    if (app.svg) {
-      item.innerHTML = app.svg;
-    } else {
-      item.textContent = app.icon || "🌐";
-    }
+    if (app.svg) item.innerHTML = app.svg;
+    else item.textContent = app.icon || "🌐";
     item.appendChild(dot);
     item.setAttribute("data-name", app.name);
     dock.appendChild(item);
@@ -224,7 +220,6 @@ function saveInstalledGames(list) {
 function getCustomCatalog() {
   return JSON.parse(localStorage.getItem("novaos_custom_games") || "[]");
 }
-
 function openGnMathArcade() {
   createWindow("App Store & Games", "arcade", (body) => {
     let activeTab = "discover";
@@ -354,14 +349,13 @@ function openGnMathArcade() {
       }
 
       const grid = el("div", { className: "store-grid" });
-      filtered.forEach(g => grid.appendChild(renderCard(g, installedIds.has(g.id)))); 
+      filtered.forEach(g => grid.appendChild(renderCard(g, installedIds.has(g.id))));
       content.appendChild(grid);
-}
-renderStore();
-});
-}
-}
+    }
 
+    renderStore();
+  });
+}
 let pyodideInstance = null;
 function loadPyodideLazy() {
   if (window.loadPyodide) return window.loadPyodide();
