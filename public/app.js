@@ -1,3 +1,5 @@
+const TUX_SVG = `<svg viewBox="0 0 220 260" width="54" height="64" xmlns="http://w3.org"><ellipse cx="110" cy="145" rx="68" ry="88" fill="#111827"/><ellipse cx="110" cy="156" rx="48" ry="68" fill="#f8fafc"/><circle cx="110" cy="64" r="42" fill="#111827"/><ellipse cx="97" cy="56" rx="11" ry="15" fill="#fff"/><ellipse cx="123" cy="56" rx="11" ry="15" fill="#fff"/><circle cx="100" cy="58" r="5" fill="#0f172a"/><circle cx="120" cy="58" r="5" fill="#0f172a"/><circle cx="102" cy="56" r="1.8" fill="#fff"/><circle cx="122" cy="56" r="1.8" fill="#fff"/><path d="M86 76 Q110 64 134 76 Q130 96 110 98 Q90 96 86 76 Z" fill="#facc15" stroke="#ca8a04" stroke-width="2"/><path d="M88 79 Q110 91 132 79" fill="none" stroke="#a16207" stroke-width="2.5" stroke-linecap="round"/><path d="M46 115 Q24 155 48 182 Q62 172 60 142 Z" fill="#111827"/><path d="M174 115 Q196 155 172 182 Q158 172 160 142 Z" fill="#111827"/><path d="M42 215 Q32 238 66 244 Q95 246 98 228 Q94 208 66 206 Z" fill="#facc15" stroke="#ca8a04" stroke-width="2"/><path d="M178 215 Q188 238 154 244 Q125 246 122 228 Q126 208 154 206 Z" fill="#facc15" stroke="#ca8a04" stroke-width="2"/></svg>`;
+
 const APP_ICONS = {
   browser: `<svg viewBox="0 0 64 64" width="38" height="38"><defs><linearGradient id="safB" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient></defs><rect x="4" y="4" width="56" height="56" rx="14" fill="#f8fafc"/><circle cx="32" cy="32" r="23" fill="url(#safB)"/><circle cx="32" cy="32" r="20" fill="none" stroke="#fff" stroke-opacity="0.55" stroke-width="1.5" stroke-dasharray="1.5 3.7"/><polygon points="44,20 35,35 32,32" fill="#ef4444"/><polygon points="20,44 29,29 32,32" fill="#fff"/></svg>`,
   glow: `<svg viewBox="0 0 64 64" width="38" height="38"><defs><linearGradient id="msgG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4ade80"/><stop offset="100%" stop-color="#16a34a"/></linearGradient></defs><rect x="4" y="4" width="56" height="56" rx="14" fill="url(#msgG)"/><path d="M32 15 C20 15 11 22.2 11 31 C11 35.8 13.9 40 18.5 42.8 L15.5 49.5 L24 45.6 C26.5 46.3 29.2 46.7 32 46.7 C44 46.7 53 39.5 53 31 C53 22.2 44 15 32 15 Z" fill="#fff"/></svg>`,
@@ -254,7 +256,12 @@ function openBrowserWindow(title, appId, initialUrl, useProxy = true, showBar = 
 
     async function navigateTab(tab, raw) {
       let target = raw.trim();
-      if (useProxy && !target.startsWith("http://") && !target.startsWith("https://")) {
+      const ytMatch = target.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/);
+      if (ytMatch) {
+        target = `https://youtube-nocookie.com{ytMatch[1]}?autoplay=1`;
+      } else if (/^https?:\/\/(www\.|m\.)?youtube\.com\/?$/i.test(target)) {
+        target = "https://yewtu.be";
+      } else if (useProxy && !target.startsWith("http://") && !target.startsWith("https://")) {
         target = target.includes(".") && !target.includes(" ")
           ? "https://" + target
           : "https://duckduckgo.com" + encodeURIComponent(target);
@@ -302,7 +309,6 @@ function openBrowserWindow(title, appId, initialUrl, useProxy = true, showBar = 
     await addTab(initialUrl);
   });
 }
-
 function openNovaAIWindow() {
   createWindow("Nova AI", "ai", (body) => {
     const feed = el("div", { className: "ai-feed" }, [
@@ -324,11 +330,13 @@ function openNovaAIWindow() {
       feed.scrollTop = feed.scrollHeight;
 
       try {
-        const res = await fetch("https://pollinations.ai" + encodeURIComponent(prompt));
+        await ensureProxy();
+        const apiUrl = "https://pollinations.ai" + encodeURIComponent(prompt) + "?model=openai";
+        const res = await fetch(encodeProxyUrl(apiUrl));
         const reply = await res.text();
         thinking.textContent = reply.trim() || "No response received.";
-      } catch {
-        thinking.textContent = "Network blocked the live AI endpoint—try opening DuckDuckGo AI or ChatGPT inside Retina!";
+      } catch (err) {
+        thinking.textContent = "Could not reach AI gateway. Try again or open DuckDuckGo AI in Retina!";
       }
       feed.scrollTop = feed.scrollHeight;
     });
@@ -802,7 +810,7 @@ function openSettingsWindow() {
       scUrl.value = "";
     }});
 
-    const wpInput = el("input", { placeholder: "Custom wallpaper URL (leave blank for Matrix rain)..." });
+    const wpInput = el("input", { placeholder: "Image or .mp4/.webm video wallpaper URL..." });
     const wpBtn = el("button", { textContent: "Apply", onclick: () => {
       localStorage.setItem("novaos_wallpaper", wpInput.value.trim());
       applySavedPreferences();
@@ -814,7 +822,7 @@ function openSettingsWindow() {
         el("div", { className: "setting-row" }, [scName, scUrl, scIcon, scBtn])
       ]),
       el("div", { className: "setting-card" }, [
-        el("h3", { textContent: "Desktop Wallpaper" }),
+        el("h3", { textContent: "Desktop Wallpaper (Static or Animated .mp4/.webm)" }),
         el("div", { className: "setting-row" }, [wpInput, wpBtn])
       ]),
       el("div", { className: "setting-card" }, [
@@ -835,9 +843,28 @@ function applyCloak(title, iconUrl) {
 }
 
 function applySavedPreferences() {
-  const wp = localStorage.getItem("novaos_wallpaper");
+  const wp = (localStorage.getItem("novaos_wallpaper") || "").trim();
   const desktop = document.getElementById("desktop");
-  desktop.style.backgroundImage = wp ? `url('${wp}')` : "none";
+  const videoBg = document.getElementById("video-bg");
+  const matrixBg = document.getElementById("matrix-bg");
+
+  if (/\.(mp4|webm|ogg)(\?.*)?$/i.test(wp)) {
+    desktop.style.backgroundImage = "none";
+    matrixBg.style.display = "none";
+    videoBg.src = wp;
+    videoBg.style.display = "block";
+    videoBg.play().catch(() => {});
+  } else if (wp) {
+    videoBg.pause();
+    videoBg.style.display = "none";
+    matrixBg.style.display = "none";
+    desktop.style.backgroundImage = `url('${wp}')`;
+  } else {
+    videoBg.pause();
+    videoBg.style.display = "none";
+    matrixBg.style.display = "block";
+    desktop.style.backgroundImage = "none";
+  }
 }
 
 const appleBtn = document.getElementById("apple-btn");
@@ -902,6 +929,79 @@ setInterval(updateClock, 1000);
       drops[i]++;
     }
   }, 45);
+})();
+
+(function initBootSequence() {
+  const screen = document.getElementById("boot-screen");
+  const term = document.getElementById("boot-terminal");
+  const log = document.getElementById("boot-log");
+  const skipBtn = document.getElementById("boot-skip");
+  const tuxEl = document.getElementById("boot-tux");
+  if (tuxEl && typeof TUX_SVG !== "undefined") tuxEl.innerHTML = TUX_SVG;
+  if (!screen || !term || !log) return;
+
+  const lines = [
+    "[    0.000] Booting NovaOS Kernel 6.11.0-matrix-amd64...",
+    "[    0.118] Checking CPU features: SSE4.2 AVX2 WebAssembly SIMD...",
+    "[    0.245] Initializing BareMux & Ultraviolet ServiceWorker...",
+    "[    0.382] Mounting VFS: /games (52 packages) /emulators /tools...",
+    "[    0.510] Starting Retina multi-tab compositor...",
+    "[    0.644] Connecting Nova AI & Glow Chat daemons...",
+    "[    0.790] Loading video & matrix rain wallpaper engine...",
+    "01001110 01101111 01110110 01100001 01001111 01010011",
+    "Compiling GLSL shaders [████████████████████] 100%",
+    "Injecting kernel hooks -> 0x7fff89a0 -> 0x7fff91b4 -> 0x7fffa02c",
+    "Accelerating terminal stream [2x]...",
+    "Accelerating terminal stream [5x]...",
+    "Accelerating terminal stream [10x]...",
+    "OVERCLOCKING MATRIX CASCADE..."
+  ];
+
+  const glyphs = "0123456789ABCDEF@#$%&*+=<>?ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄ";
+  let idx = 0;
+  let delay = 260;
+  let finished = false;
+
+  function finishBoot() {
+    if (finished) return;
+    finished = true;
+    term.classList.add("fling");
+    setTimeout(() => screen.classList.add("done"), 550);
+  }
+
+  if (skipBtn) skipBtn.onclick = finishBoot;
+
+  function step() {
+    if (finished) return;
+    if (idx < lines.length) {
+      log.textContent += lines[idx] + "\n";
+      log.scrollTop = log.scrollHeight;
+      idx++;
+      delay = Math.max(45, Math.floor(delay * 0.84));
+      setTimeout(step, delay);
+    } else {
+      let burst = 0;
+      const flood = setInterval(() => {
+        if (finished) {
+          clearInterval(flood);
+          return;
+        }
+        let row = "";
+        for (let c = 0; c < 62; c++) {
+          row += glyphs[Math.floor(Math.random() * glyphs.length)];
+        }
+        log.textContent += row + "\n";
+        log.scrollTop = log.scrollHeight;
+        burst++;
+        if (burst >= 28) {
+          clearInterval(flood);
+          finishBoot();
+        }
+      }, 32);
+    }
+  }
+
+  setTimeout(step, 180);
 })();
 
 applySavedPreferences();
