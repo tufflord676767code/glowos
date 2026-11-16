@@ -15,6 +15,17 @@ body, html {
   pointer-events: none;
 }
 
+#video-bg {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  display: none;
+  pointer-events: none;
+}
+
 #desktop {
   position: fixed;
   inset: 0;
@@ -263,3 +274,80 @@ iframe.app-frame { flex: 1; width: 100%; border: none; background: #fff; }
 .studio-ed { flex: 1; background: #090d16; color: #e2e8f0; border: none; border-bottom: 1px solid #1e293b; padding: 10px; font-family: monospace; resize: none; }
 .studio-out { flex: 1; display: flex; flex-direction: column; background: #020617; }
 .studio-pre { display: none; flex: 1; margin: 0; padding: 12px; font-family: monospace; font-size: 13px; color: #e2e8f0; overflow: auto; white-space: pre-wrap; }
+
+#boot-screen {
+  position: fixed;
+  inset: 0;
+  background: #020804;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+#boot-screen.done { opacity: 0; visibility: hidden; pointer-events: none; }
+#boot-terminal {
+  width: 680px;
+  max-width: 92vw;
+  height: 400px;
+  background: rgba(9, 17, 24, 0.96);
+  border: 1px solid rgba(52, 211, 153, 0.45);
+  border-radius: 12px;
+  box-shadow: 0 24px 70px rgba(16, 185, 129, 0.25);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform 0.75s cubic-bezier(0.55, -0.25, 0.75, 0.05), opacity 0.65s ease;
+}
+#boot-terminal.fling {
+  transform: translate(125vw, -18vh) rotate(16deg) scale(0.75);
+  opacity: 0;
+}
+.boot-bar {
+  height: 30px;
+  background: #0f1c24;
+  border-bottom: 1px solid rgba(52, 211, 153, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+}
+#boot-log {
+  flex: 1;
+  margin: 0;
+  padding: 14px;
+  font-family: monospace;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #34d399;
+  overflow: hidden;
+  white-space: pre-wrap;
+}
+#boot-skip {
+  position: fixed;
+  top: 18px;
+  right: 20px;
+  background: rgba(16, 185, 129, 0.16);
+  border: 1px solid rgba(52, 211, 153, 0.45);
+  color: #a7f3d0;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  z-index: 100000;
+}
+#boot-skip:hover { background: #10b981; color: #02130b; }
+#boot-tux {
+  position: fixed;
+  bottom: 22px;
+  right: 26px;
+  font-size: 42px;
+  animation: tuxSpin 1.4s linear infinite;
+  filter: drop-shadow(0 0 12px rgba(52, 211, 153, 0.6));
+}
+@keyframes tuxSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
