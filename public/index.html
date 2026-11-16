@@ -8,6 +8,16 @@
   <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
+  <div id="boot-screen">
+    <button id="boot-skip">Skip Boot ⏭</button>
+    <div id="boot-terminal">
+      <div class="boot-bar"><span class="tl-btn tl-close"></span><span class="tl-btn tl-min"></span><span class="tl-btn tl-max"></span><span style="margin-left:8px;color:#94a3b8;font-size:12px;">novaos-kernel — zsh</span></div>
+      <pre id="boot-log"></pre>
+    </div>
+    <div id="boot-tux" title="NovaOS Kernel">🐧</div>
+  </div>
+
+  <video id="video-bg" autoplay loop muted playsinline></video>
   <canvas id="matrix-bg"></canvas>
 
   <header id="menubar">
