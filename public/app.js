@@ -331,3 +331,293 @@ const STORE_CATALOG = [
   { id: "tool-soundboard", name: "Soundboard", source: "Tool", cat: "Audio", icon: "🔊", url: "/tools/Soundboard.html", local: true },
   { id: "tool-sandstone", name: "Sandstone", source: "Tool", cat: "Utility", icon: "🏜️", url: "/tools/sandstone.html", local: true }
   ];
+const getInstalledGames = () => JSON.parse(localStorage.getItem("novaos_installed_games") || "[]");
+const saveInstalledGames = l => localStorage.setItem("novaos_installed_games", JSON.stringify(l));
+const getCustomCatalog = () => JSON.parse(localStorage.getItem("novaos_custom_games") || "[]");
+
+function openGnMathArcade() {
+  createWindow("App Store & Games", "arcade", body => {
+    let tab = "discover", q = "";
+    const bDisc = el("button", { className: "store-tab active", textContent: "Discover", onclick: () => setTab("discover") });
+    const bLib = el("button", { className: "store-tab", textContent: "My Library", onclick: () => setTab("library") });
+    const bPort = el("button", { className: "store-tab", textContent: "Full Portals", onclick: () => setTab("portals") });
+    const sIn = el("input", { className: "store-search", placeholder: "Search local games, emulators & tools...", oninput: () => { q = sIn.value.toLowerCase(); draw(); } });
+    const content = el("div", { className: "store-body" });
+    body.appendChild(el("div", { className: "store-shell" }, [el("div", { className: "store-nav" }, [el("div", { className: "store-tabs" }, [bDisc, bLib, bPort]), sIn]), content]));
+
+    function setTab(t) {
+      tab = t;
+      [bDisc, bLib, bPort].forEach(b => b.classList.remove("active"));
+      (t === "discover" ? bDisc : t === "library" ? bLib : bPort).classList.add("active");
+      draw();
+    }
+
+    function draw() {
+      content.innerHTML = "";
+      const inst = getInstalledGames(), instIds = new Set(inst.map(g => g.id));
+      if (tab === "portals") {
+        content.appendChild(el("div", { className: "store-grid" }, [
+          ["gn-math.dev Hub", "Games, Music & Tools", "🎮", "https://gn-math.dev"],
+          ["Poki Games", "1,000+ Instant HTML5 Games", "🕹️", "https://poki.com"],
+          ["CrazyGames", "Multiplayer & 3D Web Games", "🔥", "https://crazygames.com"]
+        ].map(([name, sub, icon, url]) => el("div", { className: "store-card" }, [
+          el("div", { className: "store-icon", textContent: icon }),
+          el("div", { className: "store-meta" }, [el("div", { className: "store-name", textContent: name }), el("div", { className: "store-sub", textContent: sub })]),
+          el("button", { className: "btn-play", textContent: "Open", onclick: () => openBrowserWindow(name, "arcade", url, true, true) })
+        ]))));
+        return;
+      }
+
+      if (tab === "discover") {
+        const nIn = el("input", { placeholder: "Custom Game Title" });
+        const uIn = el("input", { placeholder: "Paste Direct Game URL" });
+        content.appendChild(el("div", { className: "add-game-bar" }, [nIn, uIn, el("button", { textContent: "+ Add to Store", onclick: () => {
+          if (!nIn.value.trim() || !uIn.value.trim()) return;
+          const c = getCustomCatalog();
+          c.unshift({ id: "cust-" + Date.now(), name: nIn.value.trim(), source: "Custom", cat: "Web", icon: "🕹️", url: uIn.value.trim(), local: false });
+          localStorage.setItem("novaos_custom_games", JSON.stringify(c));
+          nIn.value = ""; uIn.value = ""; draw();
+        }})]));
+      }
+
+      const pool = (tab === "library" ? inst : [...getCustomCatalog(), ...STORE_CATALOG]).filter(g => g.name.toLowerCase().includes(q) || g.cat.toLowerCase().includes(q));
+      if (!pool.length) {
+        content.appendChild(el("div", { textContent: tab === "library" ? "Your Library is empty. Click GET on any game in Discover!" : "No games match your search.", style: "color:#94a3b8;font-size:13px;padding:20px;text-align:center;" }));
+        return;
+      }
+
+      const grid = el("div", { className: "store-grid" });
+      pool.forEach(g => {
+        const acts = el("div", { className: "store-actions" });
+        if (instIds.has(g.id)) {
+          acts.append(
+            el("button", { className: "btn-play", textContent: "▶ Play", onclick: () => openBrowserWindow(g.name, "arcade", g.url, !g.local, false) }),
+            el("button", { className: "btn-offload", textContent: "Offload", onclick: () => { saveInstalledGames(getInstalledGames().filter(x => x.id !== g.id)); draw(); } })
+          );
+        } else {
+          acts.append(el("button", { className: "btn-get", textContent: "GET", onclick: e => { e.target.textContent = "Downloading..."; e.target.disabled = true; setTimeout(() => { const cur = getInstalledGames(); if (!cur.some(x => x.id === g.id)) { cur.push(g); saveInstalledGames(cur); } draw(); }, 250); } }));
+        }
+        grid.appendChild(el("div", { className: "store-card" }, [
+          el("div", { className: "store-icon", textContent: g.icon || "🎮" }),
+          el("div", { className: "store-meta" }, [el("div", { className: "store-name", textContent: g.name }), el("div", { className: "store-sub", textContent: `${g.source} · ${g.cat}` })]),
+          acts
+        ]));
+      });
+      content.appendChild(grid);
+    }
+    draw();
+  });
+}
+const GLOW_LINK_VAULT = [
+  { name: "Glow Chat (Primary)", url: GLOW_CHAT_URL, tag: "Social", icon: "💬", proxy: false },
+  { name: "gn-math.dev (All Games)", url: "https://gn-math.dev", tag: "Games", icon: "🎮", proxy: true },
+  { name: "Poki Games", url: "https://poki.com", tag: "Games", icon: "🕹️", proxy: true },
+  { name: "CrazyGames", url: "https://crazygames.com", tag: "Games", icon: "🔥", proxy: true },
+  { name: "Truffled Portal", url: "https://truffled.lol", tag: "Games", icon: "🍄", proxy: true },
+  { name: "DuckDuckGo Search", url: "https://duckduckgo.com", tag: "Search", icon: "🦆", proxy: true }
+];
+
+function openGlowLinksWindow() {
+  createWindow("Glow Link Collection", "links", body => {
+    let q = "", tag = "All";
+    const sIn = el("input", { className: "store-search", placeholder: "Search Glow Link Collection...", oninput: () => { q = sIn.value.toLowerCase(); draw(); } });
+    const content = el("div", { className: "store-body" });
+    body.appendChild(el("div", { className: "store-shell" }, [el("div", { className: "store-nav" }, [sIn]), content]));
+    const getU = () => JSON.parse(localStorage.getItem("novaos_glow_links") || "[]");
+    const setU = l => localStorage.setItem("novaos_glow_links", JSON.stringify(l));
+
+    function draw() {
+      content.innerHTML = "";
+      const all = [...getU(), ...GLOW_LINK_VAULT];
+      const nIn = el("input", { placeholder: "Link Name" }), uIn = el("input", { placeholder: "https://..." }), tIn = el("input", { placeholder: "Tag", style: "max-width:130px" });
+      content.appendChild(el("div", { className: "add-game-bar" }, [nIn, uIn, tIn, el("button", { textContent: "+ Save Link", onclick: () => {
+        if (!nIn.value.trim() || !uIn.value.trim()) return;
+        const url = /^https?:\/\//i.test(uIn.value.trim()) ? uIn.value.trim() : "https://" + uIn.value.trim();
+        const cur = getU(); cur.unshift({ id: "l-" + Date.now(), name: nIn.value.trim(), url, tag: tIn.value.trim() || "General", icon: "🔗", proxy: true, custom: true });
+        setU(cur); nIn.value = ""; uIn.value = ""; tIn.value = ""; draw();
+      }})]));
+
+      const pills = el("div", { style: "display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;" });
+      ["All", ...new Set(all.map(l => l.tag || "General"))].forEach(t => pills.appendChild(el("button", {
+        className: "store-tab" + (tag === t ? " active" : ""), textContent: t, style: "border:1px solid rgba(52,211,153,0.25)", onclick: () => { tag = t; draw(); }
+      })));
+      content.appendChild(pills);
+
+      const grid = el("div", { className: "store-grid" });
+      all.filter(l => (tag === "All" || l.tag === tag) && (l.name.toLowerCase().includes(q) || l.url.toLowerCase().includes(q))).forEach(link => {
+        const acts = el("div", { className: "store-actions" }, [el("button", { className: "btn-play", textContent: "Open", onclick: () => openBrowserWindow(link.name, "browser", link.url, link.proxy !== false, true) })]);
+        if (link.custom) acts.appendChild(el("button", { className: "btn-offload", textContent: "Delete", onclick: () => { setU(getU().filter(x => x.id !== link.id)); draw(); } }));
+        grid.appendChild(el("div", { className: "store-card" }, [
+          el("div", { className: "store-icon", textContent: link.icon || "🔗" }),
+          el("div", { className: "store-meta" }, [el("div", { className: "store-name", textContent: link.name }), el("div", { className: "store-sub", textContent: `${link.tag} · ${link.url.replace(/^https?:\/\//, "")}` })]),
+          acts
+        ]));
+      });
+      content.appendChild(grid);
+    }
+    draw();
+  });
+}
+
+let pyodideInst = null;
+function openCodeStudioWindow() {
+  createWindow("Code Studio", "studio", body => {
+    const sel = el("select", {}, [el("option", { value: "web", textContent: "HTML / CSS / JS" }), el("option", { value: "python", textContent: "Python 3" })]);
+    const st = el("span", { textContent: "Ready", style: "font-size:12px;color:#94a3b8;margin-left:auto" });
+    const eH = el("textarea", { className: "studio-ed", value: "<h1>Hello NovaOS!</h1>" });
+    const eC = el("textarea", { className: "studio-ed", value: "body{font-family:sans-serif;color:#34d399;background:#090d16;padding:16px}" });
+    const eJ = el("textarea", { className: "studio-ed", value: "console.log('NovaOS');" });
+    const cols = el("div", { className: "studio-col" }, [eH, eC, eJ]);
+    const eP = el("textarea", { className: "studio-ed", value: "for i in range(5): print(i)", style: "display:none" });
+    const wOut = el("iframe", { className: "app-frame", sandbox: "allow-scripts" });
+    const pOut = el("pre", { className: "studio-pre" });
+
+    sel.onchange = () => { const w = sel.value === "web"; cols.style.display = w ? "flex" : "none"; wOut.style.display = w ? "block" : "none"; eP.style.display = w ? "none" : "block"; pOut.style.display = w ? "none" : "block"; };
+    const run = el("button", { textContent: "▶ Run", onclick: async () => {
+      if (sel.value === "web") {
+        const d = wOut.contentDocument; d.open(); d.write(`${eH.value}<style>${eC.value}</style><script>${eJ.value}<\/script>`); d.close(); st.textContent = "Rendered";
+      } else {
+        if (!pyodideInst) { st.textContent = "Loading Python..."; await new Promise((res, rej) => { const s = el("script", { src: "https://jsdelivr.net", onload: res, onerror: rej }); document.head.appendChild(s); }); pyodideInst = await window.loadPyodide(); }
+        pOut.textContent = ""; pyodideInst.setStdout({ batched: m => pOut.textContent += m + "\n" });
+        try { await pyodideInst.runPythonAsync(eP.value); st.textContent = "Done"; } catch (e) { pOut.textContent += e; st.textContent = "Error"; }
+      }
+    }});
+    body.append(el("div", { className: "studio-bar" }, [sel, run, st]), el("div", { className: "studio-main" }, [cols, eP, el("div", { className: "studio-out" }, [wOut, pOut])]));
+  });
+}
+function openSettingsWindow() {
+  createWindow("System Settings", "settings", body => {
+    const nIn = el("input", { placeholder: "App Name (e.g. YouTube)" });
+    const uIn = el("input", { placeholder: "https://youtube.com" });
+    const iIn = el("input", { placeholder: "Emoji or SVG", style: "max-width:110px" });
+    const wpIn = el("input", { placeholder: "Image or .mp4/.webm video wallpaper URL..." });
+
+    body.appendChild(el("div", { className: "settings-wrap" }, [
+      el("div", { className: "setting-card" }, [
+        el("h3", { textContent: "Add App to Dock" }),
+        el("div", { className: "setting-row" }, [nIn, uIn, iIn, el("button", { textContent: "Add to Dock", onclick: () => {
+          if (!nIn.value.trim() || !uIn.value.trim()) return;
+          const url = /^https?:\/\//i.test(uIn.value.trim()) ? uIn.value.trim() : "https://" + uIn.value.trim();
+          const saved = JSON.parse(localStorage.getItem("novaos_shortcuts") || "[]");
+          const entry = { id: "c-" + Date.now(), name: nIn.value.trim(), kind: "proxy", url };
+          if (iIn.value.trim().startsWith("<svg")) entry.svg = iIn.value.trim();
+          else entry.icon = iIn.value.trim() || "🌐";
+          saved.push(entry); localStorage.setItem("novaos_shortcuts", JSON.stringify(saved));
+          renderDock(); nIn.value = ""; uIn.value = "";
+        }})])
+      ]),
+      el("div", { className: "setting-card" }, [
+        el("h3", { textContent: "Desktop Wallpaper (Static or Animated .mp4/.webm)" }),
+        el("div", { className: "setting-row" }, [wpIn, el("button", { textContent: "Apply", onclick: () => { localStorage.setItem("novaos_wallpaper", wpIn.value.trim()); applySavedPreferences(); } })])
+      ]),
+      el("div", { className: "setting-card" }, [
+        el("h3", { textContent: "Tab Cloak" }),
+        el("div", { className: "setting-row" }, [
+          el("button", { textContent: "Google Docs", onclick: () => applyCloak("Google Docs", "https://gstatic.com") }),
+          el("button", { textContent: "Canvas LMS", onclick: () => applyCloak("Dashboard", "https://cloudfront.net") }),
+          el("button", { textContent: "Reset", onclick: () => applyCloak("NovaOS", "") })
+        ])
+      ])
+    ]));
+  });
+}
+
+function applyCloak(title, icon) {
+  document.title = title;
+  if (icon) document.getElementById("favicon").href = icon;
+}
+
+function applySavedPreferences() {
+  const wp = (localStorage.getItem("novaos_wallpaper") || "").trim();
+  const desk = document.getElementById("desktop"), vid = document.getElementById("video-bg"), mat = document.getElementById("matrix-bg");
+  if (/\.(mp4|webm|ogg)(\?.*)?$/i.test(wp)) {
+    desk.style.backgroundImage = "none"; mat.style.display = "none";
+    vid.src = wp; vid.style.display = "block"; vid.play().catch(() => {});
+  } else if (wp) {
+    vid.pause(); vid.style.display = "none"; mat.style.display = "none";
+    desk.style.backgroundImage = `url('${wp}')`;
+  } else {
+    vid.pause(); vid.style.display = "none"; mat.style.display = "block";
+    desk.style.backgroundImage = "none";
+  }
+}
+
+const appleBtn = document.getElementById("apple-btn"), appleMenu = document.getElementById("apple-menu");
+appleBtn.onclick = e => { e.stopPropagation(); appleMenu.style.display = appleMenu.style.display === "flex" ? "none" : "flex"; };
+document.onclick = () => { appleMenu.style.display = "none"; };
+
+document.getElementById("menu-browser").onclick = () => openBrowserWindow("Retina", "browser", "https://duckduckgo.com", true, true);
+document.getElementById("menu-arcade").onclick = () => openGnMathArcade();
+document.getElementById("menu-studio").onclick = () => openCodeStudioWindow();
+document.getElementById("menu-settings").onclick = () => openSettingsWindow();
+document.getElementById("drop-settings").onclick = () => openSettingsWindow();
+document.getElementById("drop-studio").onclick = () => openCodeStudioWindow();
+document.getElementById("drop-arcade").onclick = () => openGnMathArcade();
+document.getElementById("drop-restart").onclick = () => location.reload();
+
+const tick = () => {
+  const d = new Date();
+  document.getElementById("clock").textContent = d.toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" }) + "  " + d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+};
+tick(); setInterval(tick, 1000);
+
+(function initMatrix() {
+  const c = document.getElementById("matrix-bg"), ctx = c.getContext("2d");
+  const chars = "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let drops = [];
+  const fit = () => { c.width = innerWidth; c.height = innerHeight; drops = Array(Math.floor(c.width / 18)).fill(1).map(() => Math.random() * -50); };
+  fit(); addEventListener("resize", fit);
+  setInterval(() => {
+    ctx.fillStyle = "rgba(2, 8, 4, 0.08)"; ctx.fillRect(0, 0, c.width, c.height); ctx.font = "16px monospace";
+    for (let i = 0; i < drops.length; i++) {
+      const ch = chars[Math.floor(Math.random() * chars.length)], x = i * 18, y = drops[i] * 18;
+      ctx.fillStyle = Math.random() > 0.85 ? "#a7f3d0" : "#10b981";
+      ctx.shadowColor = "#34d399"; ctx.shadowBlur = 8; ctx.fillText(ch, x, y); ctx.shadowBlur = 0;
+      if (y > c.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    }
+  }, 45);
+})();
+
+(function initBootSequence() {
+  const scr = document.getElementById("boot-screen"), term = document.getElementById("boot-terminal"), log = document.getElementById("boot-log"), skip = document.getElementById("boot-skip"), tux = document.getElementById("boot-tux");
+  if (tux) tux.innerHTML = TUX_SVG;
+  if (!scr || !term || !log) return;
+  const lines = [
+    "[    0.000] Booting NovaOS Kernel 6.11.0-matrix-amd64...",
+    "[    0.118] Checking CPU features: SSE4.2 AVX2 WebAssembly SIMD...",
+    "[    0.245] Initializing BareMux & Ultraviolet ServiceWorker...",
+    "[    0.382] Mounting VFS: /games (52 packages) /emulators /tools...",
+    "[    0.510] Starting Retina multi-tab compositor...",
+    "[    0.644] Connecting Nova AI & Glow Chat daemons...",
+    "[    0.790] Loading video & matrix rain wallpaper engine...",
+    "Compiling GLSL shaders [████████████████████] 100%",
+    "Injecting kernel hooks -> 0x7fff89a0 -> 0x7fff91b4 -> 0x7fffa02c",
+    "Accelerating terminal stream [2x]...",
+    "Accelerating terminal stream [5x]...",
+    "OVERCLOCKING MATRIX CASCADE..."
+  ];
+  const glyphs = "0123456789ABCDEF@#$%&*+=<>?ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄ";
+  let idx = 0, delay = 250, done = false;
+  const finish = () => { if (done) return; done = true; term.classList.add("fling"); setTimeout(() => scr.classList.add("done"), 550); };
+  if (skip) skip.onclick = finish;
+  const step = () => {
+    if (done) return;
+    if (idx < lines.length) {
+      log.textContent += lines[idx++] + "\n"; log.scrollTop = log.scrollHeight;
+      delay = Math.max(45, Math.floor(delay * 0.84)); setTimeout(step, delay);
+    } else {
+      let b = 0;
+      const flood = setInterval(() => {
+        if (done) return clearInterval(flood);
+        let row = ""; for (let k = 0; k < 62; k++) row += glyphs[Math.floor(Math.random() * glyphs.length)];
+        log.textContent += row + "\n"; log.scrollTop = log.scrollHeight;
+        if (++b >= 28) { clearInterval(flood); finish(); }
+      }, 32);
+    }
+  };
+  setTimeout(step, 180);
+})();
+
+applySavedPreferences();
+renderDock();
