@@ -18,7 +18,14 @@
   </div>
 
   <video id="video-bg" autoplay loop muted playsinline></video>
+  <main id="desktop"></main>
   <canvas id="matrix-bg"></canvas>
+
+  <div id="wp-clock-overlay">
+    <div id="wp-clock-time"></div>
+    <div id="wp-clock-day"></div>
+    <div id="wp-clock-date"></div>
+  </div>
 
   <header id="menubar">
     <div class="menu-left">
@@ -42,8 +49,6 @@
     <div class="drop-item" id="drop-restart">Restart NovaOS</div>
   </div>
 
-  <main id="desktop"></main>
-
   <footer id="dock-wrap">
     <div id="dock"></div>
   </footer>
@@ -51,6 +56,7 @@
   <script src="/baremux/index.js"></script>
   <script src="/uv/uv.bundle.js"></script>
   <script src="/uv.config.js"></script>
+  <script src="/scramjet/scramjet.all.js"></script>
   <script src="/app.js"></script>
 </body>
 </html>
