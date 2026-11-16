@@ -1,17 +1,21 @@
 const APP_ICONS = {
-  browser: `<svg viewBox="0 0 64 64" width="34" height="34"><defs><linearGradient id="ret" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient></defs><rect x="6" y="6" width="52" height="52" rx="14" fill="url(#ret)"/><circle cx="32" cy="32" r="16" fill="none" stroke="#fff" stroke-width="3.5"/><circle cx="32" cy="32" r="7" fill="#fff"/><circle cx="35" cy="29" r="2.2" fill="#2563eb"/></svg>`,
-  glow: `<svg viewBox="0 0 64 64" width="34" height="34"><defs><linearGradient id="msg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4ade80"/><stop offset="100%" stop-color="#16a34a"/></linearGradient></defs><rect x="6" y="6" width="52" height="52" rx="14" fill="url(#msg)"/><path d="M32 16 C20.5 16 12 22.8 12 31.2 C12 35.8 14.8 39.8 19.2 42.5 L16.5 49 L24.5 45.2 C26.9 45.9 29.4 46.3 32 46.3 C43.5 46.3 52 39.5 52 31.2 C52 22.8 43.5 16 32 16 Z" fill="#fff"/></svg>`,
-  arcade: `<svg viewBox="0 0 64 64" width="34" height="34"><defs><linearGradient id="arc" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#059669"/></linearGradient></defs><rect x="6" y="14" width="52" height="36" rx="14" fill="url(#arc)"/><path d="M22 25 v14 M15 32 h14" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="43" cy="28" r="3" fill="#fff"/><circle cx="49" cy="34" r="3" fill="#fff"/></svg>`,
-  links: `<svg viewBox="0 0 64 64" width="34" height="34"><defs><linearGradient id="lnk" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#34d399"/><stop offset="100%" stop-color="#0284c7"/></linearGradient></defs><rect x="6" y="6" width="52" height="52" rx="14" fill="url(#lnk)"/><path d="M27 37 L37 27 M23 31 L19 35 A7 7 0 0 0 29 45 L33 41 M41 33 L45 29 A7 7 0 0 0 35 19 L31 23" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>`,
-  studio: `<svg viewBox="0 0 64 64" width="34" height="34"><path d="M46 8 L56 13 V51 L46 56 L22 36 L12 44 L8 40 L18 32 L8 24 L12 20 L22 28 Z" fill="#007acc"/><path d="M46 8 L56 13 V51 L46 56 V8 Z" fill="#1f9cf0"/><path d="M46 20 L31 32 L46 44 V20 Z" fill="#060b19"/></svg>`,
-  settings: `<svg viewBox="0 0 64 64" width="34" height="34"><defs><linearGradient id="set" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#94a3b8"/><stop offset="100%" stop-color="#475569"/></linearGradient></defs><circle cx="32" cy="32" r="26" fill="url(#set)"/><circle cx="32" cy="32" r="10" fill="none" stroke="#fff" stroke-width="5"/><path d="M32 10 v6 M32 48 v6 M10 32 h6 M48 32 h6 M17 17 l4 4 M43 43 l4 4 M47 17 l-4 4 M21 43 l-4 4" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>`
+  browser: `<svg viewBox="0 0 64 64" width="38" height="38"><defs><linearGradient id="safB" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient></defs><rect x="4" y="4" width="56" height="56" rx="14" fill="#f8fafc"/><circle cx="32" cy="32" r="23" fill="url(#safB)"/><circle cx="32" cy="32" r="20" fill="none" stroke="#fff" stroke-opacity="0.55" stroke-width="1.5" stroke-dasharray="1.5 3.7"/><polygon points="44,20 35,35 32,32" fill="#ef4444"/><polygon points="20,44 29,29 32,32" fill="#fff"/></svg>`,
+  glow: `<svg viewBox="0 0 64 64" width="38" height="38"><defs><linearGradient id="msgG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4ade80"/><stop offset="100%" stop-color="#16a34a"/></linearGradient></defs><rect x="4" y="4" width="56" height="56" rx="14" fill="url(#msgG)"/><path d="M32 15 C20 15 11 22.2 11 31 C11 35.8 13.9 40 18.5 42.8 L15.5 49.5 L24 45.6 C26.5 46.3 29.2 46.7 32 46.7 C44 46.7 53 39.5 53 31 C53 22.2 44 15 32 15 Z" fill="#fff"/></svg>`,
+  ai: `<svg viewBox="0 0 64 64" width="38" height="38"><defs><linearGradient id="aig" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#ec4899"/></linearGradient></defs><rect x="4" y="4" width="56" height="56" rx="14" fill="url(#aig)"/><path d="M32 14 L36 27 L49 31 L36 35 L32 48 L28 35 L15 31 L28 27 Z" fill="#fff"/><circle cx="45" cy="19" r="3" fill="#fff"/></svg>`,
+  arcade: `<svg viewBox="0 0 64 64" width="38" height="38"><defs><linearGradient id="arc" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#059669"/></linearGradient></defs><rect x="4" y="4" width="56" height="56" rx="14" fill="url(#arc)"/><path d="M22 25 v14 M15 32 h14" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="43" cy="28" r="3" fill="#fff"/><circle cx="49" cy="34" r="3" fill="#fff"/></svg>`,
+  links: `<svg viewBox="0 0 64 64" width="38" height="38"><defs><linearGradient id="lnk" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#34d399"/><stop offset="100%" stop-color="#0284c7"/></linearGradient></defs><rect x="4" y="4" width="56" height="56" rx="14" fill="url(#lnk)"/><path d="M27 37 L37 27 M23 31 L19 35 A7 7 0 0 0 29 45 L33 41 M41 33 L45 29 A7 7 0 0 0 35 19 L31 23" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>`,
+  calc: `<svg viewBox="0 0 64 64" width="38" height="38"><rect x="4" y="4" width="56" height="56" rx="14" fill="#1e293b"/><rect x="13" y="12" width="38" height="12" rx="4" fill="#10b981"/><circle cx="20" cy="34" r="3.5" fill="#fff"/><circle cx="32" cy="34" r="3.5" fill="#fff"/><circle cx="44" cy="34" r="3.5" fill="#f59e0b"/><circle cx="20" cy="45" r="3.5" fill="#fff"/><circle cx="32" cy="45" r="3.5" fill="#fff"/><circle cx="44" cy="45" r="3.5" fill="#f59e0b"/></svg>`,
+  studio: `<svg viewBox="0 0 64 64" width="38" height="38"><rect x="4" y="4" width="56" height="56" rx="14" fill="#1c1c1e"/><polyline points="17,21 26,28 17,35" fill="none" stroke="#f8fafc" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="29" y1="36" x2="41" y2="36" stroke="#94a3b8" stroke-width="3.5" stroke-linecap="round"/></svg>`,
+  settings: `<svg viewBox="0 0 64 64" width="38" height="38"><defs><linearGradient id="set" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#94a3b8"/><stop offset="100%" stop-color="#475569"/></linearGradient></defs><rect x="4" y="4" width="56" height="56" rx="14" fill="url(#set)"/><circle cx="32" cy="32" r="10" fill="none" stroke="#fff" stroke-width="5"/><path d="M32 12 v5 M32 47 v5 M12 32 h5 M47 32 h5 M18 18 l4 4 M42 42 l4 4 M46 18 l-4 4 M22 42 l-4 4" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>`
 };
 
 const coreApps = [
   { id: "browser", name: "Retina", svg: APP_ICONS.browser, kind: "browser", url: "https://duckduckgo.com" },
   { id: "glow", name: "Glow Chat", svg: APP_ICONS.glow, kind: "browser", url: "https://web.app" },
+  { id: "ai", name: "Nova AI", svg: APP_ICONS.ai, kind: "ai" },
   { id: "arcade", name: "Games", svg: APP_ICONS.arcade, kind: "arcade" },
   { id: "links", name: "Glow Links", svg: APP_ICONS.links, kind: "links" },
+  { id: "calc", name: "Calculator", svg: APP_ICONS.calc, kind: "calc" },
   { id: "studio", name: "Code Studio", svg: APP_ICONS.studio, kind: "studio" },
   { id: "settings", name: "Settings", svg: APP_ICONS.settings, kind: "settings" }
 ];
@@ -92,6 +96,11 @@ function createWindow(title, appId, builderFn) {
   const dockIcon = document.getElementById("dock-" + appId);
   if (dockIcon) dockIcon.classList.add("open");
 
+  const toggleFullscreen = () => {
+    win.classList.toggle("maximized");
+    fsBtn.textContent = win.classList.contains("maximized") ? "Exit Fullscreen" : "⛶ Fullscreen";
+  };
+
   const closeBtn = el("button", { className: "tl-btn tl-close", title: "Close", onclick: () => {
     win.remove();
     if (dockIcon && !document.querySelector(`[data-appid="${appId}"]`)) {
@@ -101,13 +110,13 @@ function createWindow(title, appId, builderFn) {
   const minBtn = el("button", { className: "tl-btn tl-min", title: "Minimize", onclick: () => {
     win.style.display = "none";
   }});
-  const maxBtn = el("button", { className: "tl-btn tl-max", title: "Fullscreen", onclick: () => {
-    win.classList.toggle("maximized");
-  }});
+  const maxBtn = el("button", { className: "tl-btn tl-max", title: "Maximize", onclick: toggleFullscreen });
+  const fsBtn = el("button", { className: "win-fs-btn", textContent: "⛶ Fullscreen", onclick: toggleFullscreen });
 
   const header = el("div", { className: "win-header" }, [
     el("div", { className: "traffic-lights" }, [closeBtn, minBtn, maxBtn]),
-    el("div", { className: "win-title", textContent: title })
+    el("div", { className: "win-title", textContent: title }),
+    fsBtn
   ]);
 
   const win = el("div", { className: "os-window", id: winId }, [header, body]);
@@ -146,6 +155,10 @@ function launchApp(app) {
 
   if (app.kind === "browser" || app.kind === "proxy") {
     openBrowserWindow(app.name, app.id, app.url || "https://duckduckgo.com", true, app.kind === "browser");
+  } else if (app.kind === "ai") {
+    openNovaAIWindow();
+  } else if (app.kind === "calc") {
+    openCalculatorWindow();
   } else if (app.kind === "arcade") {
     openGnMathArcade();
   } else if (app.kind === "links") {
@@ -156,48 +169,211 @@ function launchApp(app) {
     openSettingsWindow();
   }
 }
+let localBasePrefix = null;
+
+async function resolveLocalUrl(rawPath) {
+  if (localBasePrefix !== null) return localBasePrefix + rawPath;
+  for (const prefix of ["", "/gnmath-html-games-main"]) {
+    try {
+      const res = await fetch(prefix + rawPath);
+      const text = await res.text();
+      if (res.ok && !text.includes("<title>NovaOS</title>")) {
+        localBasePrefix = prefix;
+        return prefix + rawPath;
+      }
+    } catch {}
+  }
+  return null;
+}
+
 function openBrowserWindow(title, appId, initialUrl, useProxy = true, showBar = true) {
   createWindow(title, appId, async (body) => {
-    const backBtn = el("button", { type: "button", textContent: "◀", onclick: () => { try { iframe.contentWindow.history.back(); } catch {} } });
-    const reloadBtn = el("button", { type: "button", textContent: "↻", onclick: () => navigate(input.value) });
+    const isMultiTab = appId === "browser";
+    const tabBar = el("div", { className: "retina-tabs" });
+    const stack = el("div", { className: "retina-frame-stack" });
+
+    const backBtn = el("button", { type: "button", textContent: "◀", onclick: () => { const t = getActiveTab(); if (t) { try { t.iframe.contentWindow.history.back(); } catch {} } } });
+    const fwdBtn = el("button", { type: "button", textContent: "▶", onclick: () => { const t = getActiveTab(); if (t) { try { t.iframe.contentWindow.history.forward(); } catch {} } } });
+    const reloadBtn = el("button", { type: "button", textContent: "↻", onclick: () => { const t = getActiveTab(); if (t) navigateTab(t, input.value); } });
     const input = el("input", { type: "text", value: initialUrl, placeholder: "Search or enter website name" });
     const goBtn = el("button", { type: "submit", textContent: "Go" });
-    const form = el("form", { className: "browser-bar" }, [backBtn, reloadBtn, input, goBtn]);
-    if (!showBar) form.style.display = "none";
-    const iframe = el("iframe", { className: "app-frame", allowFullscreen: true });
-    iframe.allow = "microphone; autoplay; fullscreen; gamepad; clipboard-read; clipboard-write";
-    iframe.style.background = "#090d16";
-    body.append(form, iframe);
+    const form = el("form", { className: "browser-bar" }, [backBtn, fwdBtn, reloadBtn, input, goBtn]);
 
-    async function navigate(raw) {
+    if (!showBar) form.style.display = "none";
+    if (!isMultiTab) tabBar.style.display = "none";
+    body.append(tabBar, form, stack);
+
+    let tabs = [];
+    let activeId = null;
+
+    function getActiveTab() {
+      return tabs.find(t => t.id === activeId);
+    }
+
+    function renderTabs() {
+      if (!isMultiTab) return;
+      tabBar.innerHTML = "";
+      tabs.forEach(t => {
+        const closeBtn = el("button", {
+          type: "button",
+          className: "retina-tab-close",
+          textContent: "×",
+          onclick: (e) => {
+            e.stopPropagation();
+            if (tabs.length === 1) return;
+            t.iframe.remove();
+            tabs = tabs.filter(x => x.id !== t.id);
+            if (activeId === t.id) selectTab(tabs[tabs.length - 1].id);
+            else renderTabs();
+          }
+        });
+        const pill = el("div", {
+          className: "retina-tab" + (t.id === activeId ? " active" : ""),
+          onclick: () => selectTab(t.id)
+        }, [el("span", { className: "retina-tab-title", textContent: t.label }), closeBtn]);
+        tabBar.appendChild(pill);
+      });
+      tabBar.appendChild(el("button", {
+        type: "button",
+        className: "retina-new-tab",
+        textContent: "+",
+        title: "New Tab",
+        onclick: () => addTab("https://duckduckgo.com")
+      }));
+    }
+
+    function selectTab(id) {
+      activeId = id;
+      tabs.forEach(t => {
+        const on = t.id === id;
+        t.iframe.classList.toggle("active", on);
+        if (on) input.value = t.url;
+      });
+      renderTabs();
+    }
+
+    async function navigateTab(tab, raw) {
       let target = raw.trim();
       if (useProxy && !target.startsWith("http://") && !target.startsWith("https://")) {
         target = target.includes(".") && !target.includes(" ")
           ? "https://" + target
           : "https://duckduckgo.com" + encodeURIComponent(target);
       }
-      input.value = target;
+      tab.url = target;
+      tab.label = target.replace(/^https?:\/\/(www\.)?/, "").split("/")[0] || title;
+      if (tab.id === activeId) input.value = target;
+      renderTabs();
+
       if (useProxy) {
         try {
           await ensureProxy();
-          iframe.src = encodeProxyUrl(target);
+          tab.iframe.src = encodeProxyUrl(target);
         } catch (err) {
-          iframe.srcdoc = `<body style="background:#090d16;color:#f87171;font-family:sans-serif;padding:24px;"><h3>Proxy Error</h3><pre>${err}</pre></body>`;
+          tab.iframe.srcdoc = `<body style="background:#090d16;color:#f87171;font-family:sans-serif;padding:24px;"><h3>Proxy Error</h3><pre>${err}</pre></body>`;
         }
       } else {
-        iframe.src = target;
+        const resolved = await resolveLocalUrl(target);
+        if (resolved) {
+          tab.iframe.src = resolved;
+        } else {
+          tab.iframe.srcdoc = `<body style="background:#090d16;color:#f8fafc;font-family:sans-serif;padding:24px;"><h3>Game File Not Found</h3><p style="color:#94a3b8;">Make sure your unzipped <b>games</b>, <b>emulators</b>, and <b>tools</b> folders are inside <b>public/</b>.</p></body>`;
+        }
       }
+    }
+
+    async function addTab(url) {
+      const id = "tab-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6);
+      const iframe = el("iframe", { allowFullscreen: true });
+      iframe.allow = "microphone; autoplay; fullscreen; gamepad; clipboard-read; clipboard-write";
+      iframe.style.background = "#090d16";
+      stack.appendChild(iframe);
+      const tab = { id, url, label: title, iframe };
+      tabs.push(tab);
+      selectTab(id);
+      await navigateTab(tab, url);
     }
 
     form.addEventListener("submit", (e) => {
       e.preventDefault();
-      navigate(input.value);
+      const t = getActiveTab();
+      if (t) navigateTab(t, input.value);
     });
 
-    await navigate(initialUrl);
+    await addTab(initialUrl);
   });
 }
 
+function openNovaAIWindow() {
+  createWindow("Nova AI", "ai", (body) => {
+    const feed = el("div", { className: "ai-feed" }, [
+      el("div", { className: "ai-msg bot", textContent: "Hey! I'm Nova AI. Ask me anything about coding, homework, math, or ideas." })
+    ]);
+    const input = el("input", { placeholder: "Ask Nova AI anything..." });
+    const sendBtn = el("button", { type: "submit", textContent: "Send" });
+    const form = el("form", { className: "ai-bar" }, [input, sendBtn]);
+    body.append(el("div", { className: "ai-shell" }, [feed, form]));
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const prompt = input.value.trim();
+      if (!prompt) return;
+      input.value = "";
+      feed.appendChild(el("div", { className: "ai-msg user", textContent: prompt }));
+      const thinking = el("div", { className: "ai-msg bot", textContent: "Thinking..." });
+      feed.appendChild(thinking);
+      feed.scrollTop = feed.scrollHeight;
+
+      try {
+        const res = await fetch("https://pollinations.ai" + encodeURIComponent(prompt));
+        const reply = await res.text();
+        thinking.textContent = reply.trim() || "No response received.";
+      } catch {
+        thinking.textContent = "Network blocked the live AI endpoint—try opening DuckDuckGo AI or ChatGPT inside Retina!";
+      }
+      feed.scrollTop = feed.scrollHeight;
+    });
+  });
+}
+
+function openCalculatorWindow() {
+  createWindow("Calculator", "calc", (body, win) => {
+    win.style.width = "320px";
+    win.style.height = "460px";
+    let expr = "";
+    const disp = el("div", { className: "calc-disp", textContent: "0" });
+    const grid = el("div", { className: "calc-grid" });
+    const keys = [
+      ["C", "fn"], ["⌫", "fn"], ["%", "fn"], ["/", "op"],
+      ["7", ""], ["8", ""], ["9", ""], ["*", "op"],
+      ["4", ""], ["5", ""], ["6", ""], ["-", "op"],
+      ["1", ""], ["2", ""], ["3", ""], ["+", "op"],
+      ["0", ""], [".", ""], ["(", "fn"], ["=", "op"]
+    ];
+    keys.forEach(([label, cls]) => {
+      grid.appendChild(el("button", {
+        type: "button",
+        className: "calc-btn " + cls,
+        textContent: label,
+        onclick: () => {
+          if (label === "C") { expr = ""; disp.textContent = "0"; }
+          else if (label === "⌫") { expr = expr.slice(0, -1); disp.textContent = expr || "0"; }
+          else if (label === "=") {
+            try {
+              const safe = expr.replace(/[^0-9+\-*/.%()]/g, "");
+              const ans = Function('"use strict";return (' + safe + ')')();
+              expr = String(ans);
+              disp.textContent = expr;
+            } catch { disp.textContent = "Error"; expr = ""; }
+          } else {
+            expr += label;
+            disp.textContent = expr;
+          }
+        }
+      }));
+    });
+    body.append(el("div", { className: "calc-wrap" }, [disp, grid]));
+  });
+}
 const STORE_CATALOG = [
   { id: "ages-of-conflict", name: "Ages of Conflict", source: "Local", cat: "Strategy", icon: "🗺️", url: "/games/Ages%20of%20Conflict.html", local: true },
   { id: "angry-birds", name: "Angry Birds", source: "Local", cat: "Arcade", icon: "🐦", url: "/games/Angry%20Birds.html", local: true },
@@ -261,20 +437,18 @@ function saveInstalledGames(list) {
   localStorage.setItem("novaos_installed_games", JSON.stringify(list));
 }
 
-function getCustomCatalog() {return JSON.parse(localStorage.getItem("novaos_custom_games") || "[]");
+function getCustomCatalog() {
+  return JSON.parse(localStorage.getItem("novaos_custom_games") || "[]");
 }
-const GN_ZONES_FEED = "https://jsdelivr.net";
-
 function openGnMathArcade() {
-  createWindow("App Store & Games", "arcade", async (body) => {
+  createWindow("App Store & Games", "arcade", (body) => {
     let activeTab = "discover";
     let query = "";
-    let remoteGames = [];
 
     const tabDiscover = el("button", { className: "store-tab active", textContent: "Discover" });
     const tabLibrary = el("button", { className: "store-tab", textContent: "My Library" });
     const tabPortals = el("button", { className: "store-tab", textContent: "Full Portals" });
-    const searchInput = el("input", { className: "store-search", placeholder: "Search 900+ local & gn-math.dev games..." });
+    const searchInput = el("input", { className: "store-search", placeholder: "Search local games, emulators & tools..." });
 
     const nav = el("div", { className: "store-nav" }, [
       el("div", { className: "store-tabs" }, [tabDiscover, tabLibrary, tabPortals]),
@@ -307,7 +481,7 @@ function openGnMathArcade() {
           saveInstalledGames(installed);
         }
         renderStore();
-      }, 350);
+      }, 300);
     }
 
     function offloadGame(id) {
@@ -349,7 +523,7 @@ function openGnMathArcade() {
             el("div", { className: "store-icon", textContent: "🎮" }),
             el("div", { className: "store-meta" }, [
               el("div", { className: "store-name", textContent: "gn-math.dev Hub" }),
-              el("div", { className: "store-sub", textContent: "gn-math.dev · Full Unblocked Game Library" })
+              el("div", { className: "store-sub", textContent: "gn-math.dev · Games, Music & Tools" })
             ]),
             el("button", { className: "btn-play", textContent: "Open", onclick: () => openBrowserWindow("gn-math.dev", "arcade", "https://gn-math.dev", true, true) })
           ]),
@@ -375,7 +549,7 @@ function openGnMathArcade() {
 
       if (activeTab === "discover") {
         const nameIn = el("input", { placeholder: "Custom Game Title" });
-        const urlIn = el("input", { placeholder: "Direct Game URL (e.g. https://gn-math.dev?id=12)" });
+        const urlIn = el("input", { placeholder: "Paste Direct Game URL" });
         const addBtn = el("button", { textContent: "+ Add to Store", onclick: () => {
           if (!nameIn.value.trim() || !urlIn.value.trim()) return;
           const custom = getCustomCatalog();
@@ -388,15 +562,11 @@ function openGnMathArcade() {
         content.appendChild(el("div", { className: "add-game-bar" }, [nameIn, urlIn, addBtn]));
       }
 
-      const localNames = new Set(STORE_CATALOG.map(g => g.name.toLowerCase()));
-      const dedupedRemote = remoteGames.filter(g => !localNames.has(g.name.toLowerCase()));
       const pool = activeTab === "library"
         ? installed
-        : [...getCustomCatalog(), ...STORE_CATALOG, ...dedupedRemote];
+        : [...getCustomCatalog(), ...STORE_CATALOG];
 
-      const filtered = pool
-        .filter(g => g.name.toLowerCase().includes(query) || g.cat.toLowerCase().includes(query) || g.source.toLowerCase().includes(query))
-        .slice(0, 160);
+      const filtered = pool.filter(g => g.name.toLowerCase().includes(query) || g.cat.toLowerCase().includes(query) || g.source.toLowerCase().includes(query));
 
       if (!filtered.length) {
         content.appendChild(el("div", {
@@ -412,25 +582,6 @@ function openGnMathArcade() {
     }
 
     renderStore();
-
-    try {
-      const res = await fetch(GN_ZONES_FEED);
-      const zones = await res.json();
-      remoteGames = zones
-        .filter(z => z && z.name && Number(z.id) >= 0)
-        .map(z => ({
-          id: "gn-" + z.id,
-          name: z.name,
-          source: "gn-math.dev",
-          cat: "Web",
-          icon: "🎮",
-          url: `https://gn-math.dev?id=${z.id}`,
-          local: false
-        }));
-      renderStore();
-    } catch (err) {
-      console.warn("gn-math.dev feed unavailable on this network:", err);
-    }
   });
 }
 const GLOW_LINK_VAULT = [
@@ -755,4 +906,3 @@ setInterval(updateClock, 1000);
 
 applySavedPreferences();
 renderDock();
-
