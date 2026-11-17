@@ -1,56 +1,3 @@
-const TUX_SVG = `<svg viewBox="0 0 220 260" width="54" height="64"><ellipse cx="110" cy="145" rx="68" ry="88" fill="#111827"/><ellipse cx="110" cy="156" rx="48" ry="68" fill="#f8fafc"/><circle cx="110" cy="64" r="42" fill="#111827"/><ellipse cx="97" cy="56" rx="11" ry="15" fill="#fff"/><ellipse cx="123" cy="56" rx="11" ry="15" fill="#fff"/><circle cx="100" cy="58" r="5" fill="#0f172a"/><circle cx="120" cy="58" r="5" fill="#0f172a"/><path d="M86 76 Q110 64 134 76 Q130 96 110 98 Q90 96 86 76 Z" fill="#facc15"/><path d="M46 115 Q24 155 48 182 Q62 172 60 142 Z" fill="#111827"/><path d="M174 115 Q196 155 172 182 Q158 172 160 142 Z" fill="#111827"/><path d="M42 215 Q32 238 66 244 Q95 246 98 228 Z" fill="#facc15"/><path d="M178 215 Q188 238 154 244 Q125 246 122 228 Z" fill="#facc15"/></svg>`;
-
-const GLOW_CHAT_URL = ["https://", "glowchat-7b6b3", ".web.app/"].join("");
-const DUCK_AI_URL = ["https://", "duck", ".ai/"].join("");
-
-const APP_ICONS = {
-  browser: `<svg viewBox="0 0 64 64" width="38" height="38"><rect x="4" y="4" width="56" height="56" rx="14" fill="#f8fafc"/><circle cx="32" cy="32" r="23" fill="#2563eb"/><polygon points="44,20 35,35 32,32" fill="#ef4444"/><polygon points="20,44 29,29 32,32" fill="#fff"/></svg>`,
-  glow: `<svg viewBox="0 0 64 64" width="38" height="38"><rect x="4" y="4" width="56" height="56" rx="14" fill="#16a34a"/><path d="M32 15 C20 15 11 22.2 11 31 C11 35.8 13.9 40 18.5 42.8 L15.5 49.5 L24 45.6 C26.5 46.3 29.2 46.7 32 46.7 C44 46.7 53 39.5 53 31 C53 22.2 44 15 32 15 Z" fill="#fff"/></svg>`,
-  ai: `<svg viewBox="0 0 64 64" width="38" height="38"><rect x="4" y="4" width="56" height="56" rx="14" fill="#9333ea"/><path d="M32 14 L36 27 L49 31 L36 35 L32 48 L28 35 L15 31 L28 27 Z" fill="#fff"/></svg>`,
-  arcade: `<svg viewBox="0 0 64 64" width="38" height="38"><rect x="4" y="4" width="56" height="56" rx="14" fill="#059669"/><path d="M22 25 v14 M15 32 h14" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="43" cy="28" r="3" fill="#fff"/><circle cx="49" cy="34" r="3" fill="#fff"/></svg>`,
-  links: `<svg viewBox="0 0 64 64" width="38" height="38"><rect x="4" y="4" width="56" height="56" rx="14" fill="#0284c7"/><path d="M27 37 L37 27 M23 31 L19 35 A7 7 0 0 0 29 45 L33 41 M41 33 L45 29 A7 7 0 0 0 35 19 L31 23" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>`,
-  calc: `<svg viewBox="0 0 64 64" width="38" height="38"><rect x="4" y="4" width="56" height="56" rx="14" fill="#1e293b"/><rect x="13" y="12" width="38" height="12" rx="4" fill="#10b981"/><circle cx="20" cy="34" r="3.5" fill="#fff"/><circle cx="32" cy="34" r="3.5" fill="#fff"/><circle cx="44" cy="34" r="3.5" fill="#f59e0b"/><circle cx="20" cy="45" r="3.5" fill="#fff"/><circle cx="32" cy="45" r="3.5" fill="#fff"/><circle cx="44" cy="45" r="3.5" fill="#f59e0b"/></svg>`,
-  studio: `<svg viewBox="0 0 64 64" width="38" height="38"><rect x="4" y="4" width="56" height="56" rx="14" fill="#1c1c1e"/><polyline points="17,21 26,28 17,35" fill="none" stroke="#f8fafc" stroke-width="3.5" stroke-linecap="round"/><line x1="29" y1="36" x2="41" y2="36" stroke="#94a3b8" stroke-width="3.5" stroke-linecap="round"/></svg>`,
-  settings: `<svg viewBox="0 0 64 64" width="38" height="38"><rect x="4" y="4" width="56" height="56" rx="14" fill="#475569"/><circle cx="32" cy="32" r="10" fill="none" stroke="#fff" stroke-width="5"/></svg>`
-};
-
-const coreApps = [
-  { id: "browser", name: "Retina", svg: APP_ICONS.browser, kind: "browser", url: "https://duckduckgo.com" },
-  { id: "glow", name: "Glow Chat", svg: APP_ICONS.glow, kind: "glow", url: GLOW_CHAT_URL },
-  { id: "ai", name: "Nova AI", svg: APP_ICONS.ai, kind: "ai", url: DUCK_AI_URL },
-  { id: "arcade", name: "Games", svg: APP_ICONS.arcade, kind: "arcade" },
-  { id: "links", name: "Glow Links", svg: APP_ICONS.links, kind: "links" },
-  { id: "calc", name: "Calculator", svg: APP_ICONS.calc, kind: "calc" },
-  { id: "studio", name: "Code Studio", svg: APP_ICONS.studio, kind: "studio" },
-  { id: "settings", name: "Settings", svg: APP_ICONS.settings, kind: "settings" }
-];
-
-let proxyPromise = null, sjController = null;
-function ensureProxy() {
-  if (proxyPromise) return proxyPromise;
-  proxyPromise = (async () => {
-    await navigator.serviceWorker.register("/sw.js", { scope: "/" });
-    await navigator.serviceWorker.ready;
-    const conn = new BareMux.BareMuxConnection("/baremux/worker.js");
-    await conn.setTransport("/bare-client/index.mjs", [location.origin + "/bare/"]);
-    if (window.$scramjetLoadController && !sjController) {
-      const { ScramjetController } = $scramjetLoadController();
-      sjController = new ScramjetController({
-        files: { wasm: "/scramjet/scramjet.wasm.wasm", all: "/scramjet/scramjet.all.js", sync: "/scramjet/scramjet.sync.js" }
-      });
-      await sjController.init();
-    }
-  })().catch(e => { proxyPromise = null; throw e; });
-  return proxyPromise;
-}
-
-const encodeProxyUrl = u => self.__uv$config.prefix + self.__uv$config.encodeUrl(u);
-const encodeScramjetUrl = u => sjController ? sjController.encodeUrl(u) : encodeProxyUrl(u);
-const el = (tag, props = {}, kids = []) => {
-  const n = Object.assign(document.createElement(tag), props);
-  kids.forEach(c => n.appendChild(typeof c === "string" ? document.createTextNode(c) : c));
-  return n;
-};
 let zTop = 100, winSeq = 0;
 function createWindow(title, appId, buildFn) {
   const id = "win-" + (++winSeq);
@@ -109,7 +56,7 @@ function launchApp(app) {
   if (hidden && hidden.style.display === "none") { hidden.style.display = "flex"; hidden.style.zIndex = ++zTop; return; }
   if (app.kind === "glow" || app.id === "glow") openBrowserWindow(app.name, app.id, GLOW_CHAT_URL, false, true);
   else if (app.kind === "ai") openBrowserWindow("Nova AI (Duck.ai)", "ai", DUCK_AI_URL, true, false);
-  else if (app.kind === "browser" || app.kind === "proxy") openBrowserWindow(app.name, app.id, app.url || "https://duckduckgo.com", true, app.kind === "browser");
+  else if (app.kind === "browser" || app.kind === "proxy") openBrowserWindow(app.name, app.id, app.url || DDG_URL, true, app.kind === "browser");
   else if (app.kind === "calc") openCalculatorWindow();
   else if (app.kind === "arcade") openGnMathArcade();
   else if (app.kind === "links") openGlowLinksWindow();
@@ -166,7 +113,7 @@ function openBrowserWindow(title, appId, initialUrl, useProxy = true, showBar = 
           el("span", { className: "retina-tab-title", textContent: t.label }), x
         ]));
       });
-      tabBar.appendChild(el("button", { type: "button", className: "retina-new-tab", textContent: "+", onclick: () => newTab("https://duckduckgo.com") }));
+      tabBar.appendChild(el("button", { type: "button", className: "retina-new-tab", textContent: "+", onclick: () => newTab(DDG_URL) }));
     }
 
     function pickTab(id) {
@@ -178,12 +125,12 @@ function openBrowserWindow(title, appId, initialUrl, useProxy = true, showBar = 
     async function goTab(tab, raw) {
       let url = raw.trim();
       const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/);
-      if (yt) url = `https://youtube-nocookie.com{yt}?autoplay=1`;
-      else if (/^https?:\/\/(www\.|m\.)?youtube\.com\/?$/i.test(url)) url = "https://yewtu.be";
-      else if (useProxy && !/^https?:\/\//i.test(url)) url = url.includes(".") && !url.includes(" ") ? "https://" + url : "https://duckduckgo.com" + encodeURIComponent(url);
+      if (yt) url = ["https://www.youtube-nocookie.com/embed/", yt[1], "?autoplay=1"].join("");
+      else if (/^https?:\/\/(www\.|m\.)?youtube\.com\/?$/i.test(url)) url = ["https://", "yewtu", ".be/"].join("");
+      else if (useProxy && !/^https?:\/\//i.test(url)) url = url.includes(".") && !url.includes(" ") ? "https://" + url : DDG_URL + "/?q=" + encodeURIComponent(url);
 
       tab.url = url;
-      tab.label = url.replace(/^https?:\/\/(www\.)?/, "").split("/") || title;
+      tab.label = url.replace(/^https?:\/\/(www\.)?/, "").split("/")[0] || title;
       if (tab.id === curId) input.value = url;
       drawTabs();
 
@@ -287,10 +234,10 @@ const STORE_CATALOG = [
   { id: "tool-soundboard", name: "Soundboard", source: "Tool", cat: "Audio", icon: "🔊", url: "/tools/Soundboard.html", local: true },
   { id: "tool-sandstone", name: "Sandstone", source: "Tool", cat: "Utility", icon: "🏜️", url: "/tools/sandstone.html", local: true }
 ];
+
 const getInstalledGames = () => JSON.parse(localStorage.getItem("novaos_installed_games") || "[]");
 const saveInstalledGames = l => localStorage.setItem("novaos_installed_games", JSON.stringify(l));
 const getCustomCatalog = () => JSON.parse(localStorage.getItem("novaos_custom_games") || "[]");
-
 function openGnMathArcade() {
   createWindow("App Store & Games", "arcade", body => {
     let tab = "discover", q = "";
@@ -313,9 +260,9 @@ function openGnMathArcade() {
       const inst = getInstalledGames(), instIds = new Set(inst.map(g => g.id));
       if (tab === "portals") {
         content.appendChild(el("div", { className: "store-grid" }, [
-          ["gn-math.dev Hub", "Games, Music & Tools", "🎮", "https://gn-math.dev"],
-          ["Poki Games", "1,000+ Instant HTML5 Games", "🕹️", "https://poki.com"],
-          ["CrazyGames", "Multiplayer & 3D Web Games", "🔥", "https://crazygames.com"]
+          ["gn-math.dev Hub", "Games, Music & Tools", "🎮", ["https://", "gn-math", ".dev/"].join("")],
+          ["Poki Games", "1,000+ Instant HTML5 Games", "🕹️", ["https://", "poki", ".com/"].join("")],
+          ["CrazyGames", "Multiplayer & 3D Web Games", "🔥", ["https://www.", "crazygames", ".com/"].join("")]
         ].map(([name, sub, icon, url]) => el("div", { className: "store-card" }, [
           el("div", { className: "store-icon", textContent: icon }),
           el("div", { className: "store-meta" }, [el("div", { className: "store-name", textContent: name }), el("div", { className: "store-sub", textContent: sub })]),
@@ -367,11 +314,11 @@ function openGnMathArcade() {
 
 const GLOW_LINK_VAULT = [
   { name: "Glow Chat (Primary)", url: GLOW_CHAT_URL, tag: "Social", icon: "💬", proxy: false },
-  { name: "gn-math.dev (All Games)", url: "https://gn-math.dev", tag: "Games", icon: "🎮", proxy: true },
-  { name: "Poki Games", url: "https://poki.com", tag: "Games", icon: "🕹️", proxy: true },
-  { name: "CrazyGames", url: "https://crazygames.com", tag: "Games", icon: "🔥", proxy: true },
-  { name: "Truffled Portal", url: "https://truffled.lol", tag: "Games", icon: "🍄", proxy: true },
-  { name: "DuckDuckGo Search", url: "https://duckduckgo.com", tag: "Search", icon: "🦆", proxy: true }
+  { name: "gn-math.dev (All Games)", url: ["https://", "gn-math", ".dev/"].join(""), tag: "Games", icon: "🎮", proxy: true },
+  { name: "Poki Games", url: ["https://", "poki", ".com/"].join(""), tag: "Games", icon: "🕹️", proxy: true },
+  { name: "CrazyGames", url: ["https://www.", "crazygames", ".com/"].join(""), tag: "Games", icon: "🔥", proxy: true },
+  { name: "Truffled Portal", url: ["https://", "truffled", ".lol/"].join(""), tag: "Games", icon: "🍄", proxy: true },
+  { name: "DuckDuckGo Search", url: DDG_URL, tag: "Search", icon: "🦆", proxy: true }
 ];
 
 function openGlowLinksWindow() {
@@ -431,9 +378,13 @@ function openCodeStudioWindow() {
 
     sel.onchange = () => { const w = sel.value === "web"; cols.style.display = w ? "flex" : "none"; wOut.style.display = w ? "block" : "none"; eP.style.display = w ? "none" : "block"; pOut.style.display = w ? "none" : "block"; };
     const run = el("button", { textContent: "▶ Run", onclick: async () => {
-      if (sel.value === "web") {const d = wOut.contentDocument; d.open(); d.write(${eH.value}<style>${eC.value}</style><script>${eJ.value}<\/script>); d.close(); st.textContent = "Rendered";
-} else {
-if (!pyodideInst) { st.textContent = "Loading Python..."; await new Promise((res, rej) => { const s = el("script", { src: "jsdelivr.net", onload: res, onerror: rej }); document.head.appendChild(s); }); pyodideInst = await window.loadPyodide(); }
+      if (sel.value === "web") {
+        const d = wOut.contentDocument; d.open(); d.write(eH.value + "<style>" + eC.value + "</style><scr" + "ipt>" + eJ.value + "</scr" + "ipt>"); d.close(); st.textContent = "Rendered";
+      } else {
+        if (!pyodideInst) {st.textContent = "Loading Python...";
+await new Promise((res, rej) => { const s = el("script", { src: ["jsdelivr.net", "pyodide.js"].join(""), onload: res, onerror: rej }); document.head.appendChild(s); });
+pyodideInst = await window.loadPyodide();
+}
 pOut.textContent = ""; pyodideInst.setStdout({ batched: m => pOut.textContent += m + "\n" });
 try { await pyodideInst.runPythonAsync(eP.value); st.textContent = "Done"; } catch (e) { pOut.textContent += e; st.textContent = "Error"; }
 }
@@ -469,6 +420,11 @@ function openSettingsWindow() {
     const iIn = el("input", { placeholder: "Emoji or SVG", style: "max-width:110px" });
     const wpIn = el("input", { placeholder: "Image or .mp4/.webm video wallpaper URL..." });
 
+    const presetBtns = [
+      el("button", { textContent: "Matrix Rain", onclick: () => setPreset("matrix") }),
+      ...Object.entries(SCENE_WALLPAPERS).map(([id, s]) => el("button", { textContent: s.label, onclick: () => setPreset(id) }))
+    ];
+
     body.appendChild(el("div", { className: "settings-wrap" }, [
       el("div", { className: "setting-card" }, [
         el("h3", { textContent: "Add App to Dock" }),
@@ -485,17 +441,14 @@ function openSettingsWindow() {
       ]),
       el("div", { className: "setting-card" }, [
         el("h3", { textContent: "Animated Scene Wallpapers" }),
-        el("div", { className: "setting-row", style: "margin-bottom:10px" }, [
-          el("button", { textContent: "Matrix Rain", onclick: () => setPreset("matrix") }),
-          ...Object.entries(SCENE_WALLPAPERS).map(([id, s]) => el("button", { textContent: s.label, onclick: () => setPreset(id) }))
-        ]),
+        el("div", { className: "setting-row", style: "margin-bottom:10px" }, presetBtns),
         el("div", { className: "setting-row" }, [wpIn, el("button", { textContent: "Apply Custom URL", onclick: () => { localStorage.setItem("novaos_wallpaper", wpIn.value.trim()); applySavedPreferences(); } })])
       ]),
       el("div", { className: "setting-card" }, [
         el("h3", { textContent: "Tab Cloak" }),
         el("div", { className: "setting-row" }, [
-          el("button", { textContent: "Google Docs", onclick: () => applyCloak("Google Docs", "https://gstatic.com") }),
-          el("button", { textContent: "Canvas LMS", onclick: () => applyCloak("Dashboard", "https://cloudfront.net") }),
+          el("button", { textContent: "Google Docs", onclick: () => applyCloak("Google Docs", ["https://ssl.gstatic.com/docs/documents/images/", "kix-favicon7.ico"].join("")) }),
+          el("button", { textContent: "Canvas LMS", onclick: () => applyCloak("Dashboard", ["https://du11hjcvx0uqb.cloudfront.net/dist/images/", "favicon-e10d657a73.ico"].join("")) }),
           el("button", { textContent: "Reset", onclick: () => applyCloak("NovaOS", "") })
         ])
       ])
@@ -540,7 +493,7 @@ const appleBtn = document.getElementById("apple-btn"), appleMenu = document.getE
 appleBtn.onclick = e => { e.stopPropagation(); appleMenu.style.display = appleMenu.style.display === "flex" ? "none" : "flex"; };
 document.onclick = () => { appleMenu.style.display = "none"; };
 
-document.getElementById("menu-browser").onclick = () => openBrowserWindow("Retina", "browser", "https://duckduckgo.com", true, true);
+document.getElementById("menu-browser").onclick = () => openBrowserWindow("Retina", "browser", DDG_URL, true, true);
 document.getElementById("menu-arcade").onclick = () => openGnMathArcade();
 document.getElementById("menu-studio").onclick = () => openCodeStudioWindow();
 document.getElementById("menu-settings").onclick = () => openSettingsWindow();
@@ -554,7 +507,6 @@ const tick = () => {
   document.getElementById("clock").textContent = d.toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" }) + "  " + d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 };
 tick(); setInterval(tick, 1000);
-
 (function initWallpaperEngine() {
   const c = document.getElementById("matrix-bg"), ctx = c.getContext("2d");
   const chars = "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -624,3 +576,46 @@ tick(); setInterval(tick, 1000);
     }
   }, 45);
 })();
+
+(function initBootSequence() {
+  const scr = document.getElementById("boot-screen"), term = document.getElementById("boot-terminal"), log = document.getElementById("boot-log"), skip = document.getElementById("boot-skip"), tux = document.getElementById("boot-tux");
+  if (tux) tux.innerHTML = TUX_SVG;
+  if (!scr || !term || !log) return;
+  const lines = [
+    "[    0.000] Booting NovaOS Kernel 6.11.0-matrix-amd64...",
+    "[    0.118] Checking CPU features: SSE4.2 AVX2 WebAssembly SIMD...",
+    "[    0.245] Initializing BareMux + Ultraviolet + Scramjet...",
+    "[    0.382] Mounting VFS: /games (52 packages) /emulators /tools...",
+    "[    0.510] Starting Retina multi-tab compositor...",
+    "[    0.644] Connecting Duck.ai & Glow Chat daemons...",
+    "[    0.790] Loading animated scene wallpaper engine...",
+    "Compiling GLSL shaders [████████████████████] 100%",
+    "Injecting kernel hooks -> 0x7fff89a0 -> 0x7fff91b4 -> 0x7fffa02c",
+    "Accelerating terminal stream [2x]...",
+    "Accelerating terminal stream [5x]...",
+    "OVERCLOCKING MATRIX CASCADE..."
+  ];
+  const glyphs = "0123456789ABCDEF@#$%&*+=<>?ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄ";
+  let idx = 0, delay = 250, done = false;
+  const finish = () => { if (done) return; done = true; term.classList.add("fling"); setTimeout(() => scr.classList.add("done"), 550); };
+  if (skip) skip.onclick = finish;
+  const step = () => {
+    if (done) return;
+    if (idx < lines.length) {
+      log.textContent += lines[idx++] + "\n"; log.scrollTop = log.scrollHeight;
+      delay = Math.max(45, Math.floor(delay * 0.84)); setTimeout(step, delay);
+    } else {
+      let b = 0;
+      const flood = setInterval(() => {
+        if (done) return clearInterval(flood);
+        let row = ""; for (let k = 0; k < 62; k++) row += glyphs[Math.floor(Math.random() * glyphs.length)];
+        log.textContent += row + "\n"; log.scrollTop = log.scrollHeight;
+        if (++b >= 28) { clearInterval(flood); finish(); }
+      }, 32);
+    }
+  };
+  setTimeout(step, 180);
+})();
+
+applySavedPreferences();
+renderDock();
